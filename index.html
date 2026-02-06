@@ -62,6 +62,57 @@
         html {
             scroll-behavior: smooth;
         }
+        
+        /* Volunteer Registration Image Preview */
+        #imagePreview {
+            transition: all 0.3s ease;
+        }
+        
+        #imagePreview:hover {
+            transform: scale(1.05);
+        }
+        
+        #imagePreview img {
+            transition: transform 0.3s ease;
+        }
+        
+        #imagePreview:hover img {
+            transform: scale(1.05);
+        }
+        
+        #progressBar {
+            transition: width 0.5s ease-in-out;
+        }
+        
+        .fa-spinner {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Success message animation */
+        #successMessage {
+            animation: slideInUp 0.5s ease;
+        }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
     </style>
 </head>
 <body class="font-sans text-gray-800 bg-white">
@@ -274,62 +325,628 @@
         </div>
     </section>
 
-    <!-- Blood Bank Section -->
-    <section id="blood-bank" class="py-20 bg-red-50 relative">
-        <div class="container mx-auto px-4 relative z-10">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-12">
-                
-                <!-- Search & Info -->
-                <div class="w-full md:w-1/2">
-                    <span class="text-brand-secondary font-bold tracking-widest uppercase">জীবন বাঁচান</span>
-                    <h2 class="text-4xl font-bold text-gray-800 mt-2 mb-6">আগন্তুক ব্লাড ব্যাংক</h2>
-                    <p class="text-gray-600 mb-8">জরুরি প্রয়োজনে রক্তের সন্ধান পেতে অথবা ডোনার হিসেবে রেজিস্ট্রেশন করতে আমরা আছি আপনার পাশে।</p>
-                    
-                    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-brand-secondary">
-                        <h3 class="font-bold text-xl mb-4 text-gray-800">রক্তদাতা খুঁজুন</h3>
-                        <form onsubmit="event.preventDefault(); alert('ডেমো সাইট: সার্চ ফিচার শীঘ্রই আসছে!');" class="space-y-4">
-                            <div class="grid grid-cols-2 gap-4">
-                                <select class="w-full p-3 border rounded bg-gray-50 focus:outline-none focus:ring-2 focus:ring-brand-secondary">
-                                    <option>রক্তের গ্রুপ</option>
-                                    <option>A+</option>
-                                    <option>B+</option>
-                                    <option>AB+</option>
-                                    <option>O+</option>
-                                    <option>O-</option>
-                                </select>
-                                <select class="w-full p-3 border rounded bg-gray-50 focus:outline-none focus:ring-2 focus:ring-brand-secondary">
-                                    <option>জেলা/এলাকা</option>
-                                    <option>ঢাকা</option>
-                                    <option>চট্টগ্রাম</option>
-                                    <option>সিলেট</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="w-full bg-brand-secondary text-white py-3 rounded font-bold hover:bg-red-700 transition">
-                                <i class="fas fa-search"></i> সন্ধান করুন
-                            </button>
-                        </form>
+<!-- Blood Bank Section -->
+<section id="blood-bank" class="py-20 bg-gradient-to-r from-red-50 to-white relative overflow-hidden">
+    <div class="container mx-auto px-4 relative z-10">
+        <!-- Section Header -->
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                <span class="text-brand-secondary">আগন্তুক ব্লাড ব্যাংক</span> - জীবন বাঁচান
+            </h2>
+            <div class="w-24 h-1 bg-brand-secondary mx-auto rounded"></div>
+            <p class="mt-4 text-gray-600 max-w-2xl mx-auto">
+                জরুরি প্রয়োজনে রক্তের সন্ধান পেতে অথবা ডোনার হিসেবে রেজিস্ট্রেশন করতে আমরা আছি আপনার পাশে।
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            
+            <!-- Left Side: Search Interface -->
+            <div class="bg-white rounded-2xl shadow-xl p-8 border-l-4 border-brand-secondary hover:shadow-2xl transition duration-300">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="bg-red-100 p-3 rounded-full">
+                        <i class="fas fa-tint text-2xl text-brand-secondary"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800">রক্তদাতা খুঁজুন</h3>
+                </div>
+
+                <form id="bloodSearchForm" class="space-y-6">
+                    <div>
+                        <label class="block text-gray-700 mb-2 font-medium">রক্তের গ্রুপ</label>
+                        <select id="bloodSearch" 
+                                class="w-full p-4 border-2 border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-brand-secondary focus:border-transparent transition">
+                            <option value="">গ্রুপ সিলেক্ট করুন</option>
+                            <option>A+</option><option>A-</option>
+                            <option>B+</option><option>B-</option>
+                            <option>O+</option><option>O-</option>
+                            <option>AB+</option><option>AB-</option>
+                        </select>
                     </div>
 
-                    <div class="mt-6 flex gap-4">
-                        <button class="flex-1 bg-white border border-brand-secondary text-brand-secondary py-3 rounded font-bold hover:bg-red-50 transition">
-                            <i class="fab fa-whatsapp"></i> জরুরি যোগাযোগ
-                        </button>
-                        <button class="flex-1 bg-gray-800 text-white py-3 rounded font-bold hover:bg-black transition">
-                            ডোনার রেজিস্ট্রেশন
-                        </button>
+                    <button type="button" onclick="searchBlood()" 
+                            class="w-full bg-gradient-to-r from-brand-secondary to-red-600 text-white py-4 rounded-xl font-bold text-lg hover:shadow-lg hover:scale-[1.02] transition duration-300 flex items-center justify-center gap-3">
+                        <i class="fas fa-search"></i> ডোনার খুঁজুন
+                    </button>
+                </form>
+
+                <!-- Loader -->
+                <div id="loader" class="loader mt-6 text-center hidden">
+                    <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-brand-secondary"></div>
+                    <p class="mt-2 text-gray-600">অনুগ্রহ করে অপেক্ষা করুন...</p>
+                </div>
+
+                <!-- Results -->
+                <div id="results" class="mt-8 space-y-4 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
+                    <!-- Results will appear here -->
+                </div>
+
+                <!-- Call to Action Buttons -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+                    <a href="https://wa.me/8801798810051" 
+                       target="_blank"
+                       class="bg-gradient-to-r from-green-500 to-green-600 text-white py-3 rounded-xl font-bold hover:shadow-lg transition flex items-center justify-center gap-2">
+                        <i class="fab fa-whatsapp text-xl"></i> WhatsApp
+                    </a>
+                    <button onclick="document.getElementById('donor-register-modal').classList.remove('hidden')"
+                            class="bg-gray-800 text-white py-3 rounded-xl font-bold hover:bg-black hover:shadow-lg transition flex items-center justify-center gap-2">
+                        <i class="fas fa-user-plus"></i> ডোনার হোন
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Side: Statistics & Info -->
+            <div class="space-y-8">
+                <!-- Blood Drop Graphic -->
+                <div class="relative flex justify-center">
+                    <div class="absolute -inset-8 bg-red-100 rounded-full blur-3xl opacity-60 animate-pulse"></div>
+                    <img src="https://cdn-icons-png.flaticon.com/512/4813/4813084.png" 
+                         alt="Blood Donation" 
+                         class="w-64 h-auto relative z-10 drop-shadow-2xl animate-float">
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-lg border-t-4 border-brand-primary">
+                        <div class="text-4xl font-bold text-brand-secondary mb-2" id="totalDonors">1200+</div>
+                        <div class="text-gray-600">রক্তদান সম্পন্ন</div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-lg border-t-4 border-brand-accent">
+                        <div class="text-4xl font-bold text-brand-accent mb-2" id="activeDonors">350+</div>
+                        <div class="text-gray-600">সক্রিয় ডোনার</div>
                     </div>
                 </div>
 
-                <!-- Graphic/Image side -->
-                <div class="w-full md:w-1/2 flex justify-center">
-                    <div class="relative">
-                        <div class="absolute -inset-4 bg-red-200 rounded-full blur-2xl opacity-50 animate-pulse"></div>
-                        <img src="https://cdn-icons-png.flaticon.com/512/4813/4813084.png" alt="Blood Donation Vector" class="w-64 md:w-80 relative z-10 drop-shadow-xl">
+                <!-- Emergency Info -->
+                <div class="bg-red-50 border border-red-200 rounded-2xl p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-red-100 p-3 rounded-full">
+                            <i class="fas fa-phone-alt text-red-600"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg text-gray-800 mb-2">জরুরি হেল্পলাইন</h4>
+                            <a href="tel:01798810051" class="text-2xl font-bold text-brand-secondary hover:text-red-700 transition">
+                                01798-810051
+                            </a>
+                            <p class="text-gray-600 text-sm mt-2">২৪/৭ জরুরি রক্তের প্রয়োজন হলে কল করুন</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+
+    <!-- Donor Registration Modal (Hidden by default) -->
+    <div id="donor-register-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-md p-8 animate-popup">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800">ডোনার রেজিস্ট্রেশন</h3>
+                <button onclick="document.getElementById('donor-register-modal').classList.add('hidden')"
+                        class="text-gray-500 hover:text-gray-700 text-2xl">
+                    &times;
+                </button>
+            </div>
+
+            <form id="donorRegistrationForm" class="space-y-4">
+                <input type="text" 
+                       id="regName"
+                       placeholder="আপনার নাম"
+                       class="w-full p-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-secondary focus:border-transparent">
+
+                <select id="regBlood"
+                        class="w-full p-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-secondary focus:border-transparent">
+                    <option value="">রক্তের গ্রুপ</option>
+                    <option>A+</option><option>A-</option>
+                    <option>B+</option><option>B-</option>
+                    <option>O+</option><option>O-</option>
+                    <option>AB+</option><option>AB-</option>
+                </select>
+
+                <input type="text" 
+                       id="regArea"
+                       placeholder="ঠিকানা (যেমন: আলমডাঙ্গা)"
+                       class="w-full p-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-secondary focus:border-transparent">
+
+                <input type="tel" 
+                       id="regPhone"
+                       placeholder="মোবাইল নম্বর (01XXXXXXXXX)"
+                       class="w-full p-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-secondary focus:border-transparent">
+
+                <button type="button" 
+                        onclick="addDonor()"
+                        id="regBtn"
+                        class="w-full bg-gray-800 text-white py-3 rounded-xl font-bold hover:bg-black transition">
+                    রেজিস্ট্রেশন করুন
+                </button>
+
+                <div class="text-center pt-4 border-t">
+                    <p class="text-gray-600 text-sm">অথবা সরাসরি WhatsApp এ যোগাযোগ করুন</p>
+                    <a href="https://wa.me/8801798810051" 
+                       target="_blank"
+                       class="inline-block mt-2 bg-green-500 text-white px-6 py-2 rounded-lg font-bold hover:bg-green-600 transition">
+                        WhatsApp এ যোগাযোগ
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- CSS for Custom Scrollbar and Animations -->
+<style>
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #d32f2f;
+        border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #b71c1c;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-15px); }
+    }
+    .animate-float {
+        animation: float 5s ease-in-out infinite;
+    }
+
+    @keyframes popup {
+        0% { transform: scale(0.9); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+    .animate-popup {
+        animation: popup 0.3s ease-out;
+    }
+</style>
+
+<!-- JavaScript for Blood Bank Functionality -->
+
+<script>
+    // API URL from second website
+    const API_URL = "https://script.google.com/macros/s/AKfycbzOPB8XAlj-Ht6QzNKdsF1aDwnyyiaq-2F2yEQNLG7wg89CPO5PqDntWhvVX1eVxTA/exec";
+
+    // Custom Notification System
+    function showNotification(message, type = "info") {
+        // Remove any existing notification
+        const existing = document.querySelector('.custom-notification');
+        if (existing) existing.remove();
+        
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `custom-notification fixed top-6 right-6 z-50 w-80`;
+        
+        // Colors based on type
+        const colors = {
+            success: { bg: 'bg-green-500', icon: '✅', title: 'সফলতা' },
+            error: { bg: 'bg-red-500', icon: '❌', title: 'ত্রুটি' },
+            warning: { bg: 'bg-yellow-500', icon: '⚠️', title: 'সতর্কতা' },
+            info: { bg: 'bg-blue-500', icon: 'ℹ️', title: 'তথ্য' }
+        };
+        
+        const { bg, icon, title } = colors[type];
+        
+        notification.innerHTML = `
+            <div class="${bg} text-white rounded-xl shadow-2xl overflow-hidden transform transition-all duration-300 translate-x-20 opacity-0">
+                <div class="flex items-center p-4">
+                    <div class="text-2xl mr-3">${icon}</div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-sm opacity-90">${title}</h4>
+                        <p class="text-sm">${message}</p>
+                    </div>
+                    <button onclick="this.parentElement.parentElement.parentElement.remove()" 
+                            class="text-white opacity-70 hover:opacity-100 text-lg ml-2">
+                        &times;
+                    </button>
+                </div>
+                <div class="h-1 bg-white bg-opacity-30">
+                    <div class="h-full bg-white progress-bar" style="width: 100%"></div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Animate in
+        setTimeout(() => {
+            notification.querySelector('div').classList.remove('translate-x-20', 'opacity-0');
+        }, 10);
+        
+        // Animate progress bar
+        setTimeout(() => {
+            const progressBar = notification.querySelector('.progress-bar');
+            progressBar.style.transition = 'width 3s linear';
+            progressBar.style.width = '0%';
+        }, 100);
+        
+        // Auto remove after 3.5 seconds
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.querySelector('div').classList.add('translate-x-20', 'opacity-0');
+                setTimeout(() => notification.remove(), 300);
+            }
+        }, 3500);
+    }
+
+    // Success Modal for Registration
+    function showSuccessModal(name) {
+        const modalHTML = `
+            <div class="fixed inset-0 bg-black bg-opacity-70 z-[9999] flex items-center justify-center p-4">
+                <div class="bg-white rounded-2xl w-full max-w-md overflow-hidden animate-scale-up">
+                    <div class="bg-gradient-to-r from-green-400 to-green-500 p-8 text-center">
+                        <div class="inline-flex items-center justify-center w-20 h-20 bg-white rounded-full mb-4">
+                            <i class="fas fa-heart text-4xl text-green-500"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-2">ধন্যবাদ ${name}!</h3>
+                        <p class="text-green-100">আপনার রেজিস্ট্রেশন সফলভাবে সম্পন্ন হয়েছে</p>
+                    </div>
+                    
+                    <div class="p-6">
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-3 p-3 bg-green-50 rounded-xl">
+                                <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-check text-green-600"></i>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-gray-800">আপনি এখন আমাদের ব্লাড ডোনার</p>
+                                    <p class="text-sm text-gray-600">জরুরি প্রয়োজনে আপনার কাছে যোগাযোগ করা হতে পারে</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center gap-3 p-3 bg-blue-50 rounded-xl">
+                                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-phone text-blue-600"></i>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-gray-800">জরুরি হেল্পলাইন</p>
+                                    <a href="tel:01798810051" class="text-blue-600 font-bold hover:text-blue-700">
+                                        01798-810051
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button onclick="this.parentElement.parentElement.parentElement.remove()" 
+                                class="w-full mt-6 bg-gradient-to-r from-green-500 to-green-600 text-white py-3 rounded-xl font-bold hover:shadow-lg transition">
+                            বন্ধ করুন
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        const modalDiv = document.createElement('div');
+        modalDiv.innerHTML = modalHTML;
+        document.body.appendChild(modalDiv);
+        
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes scale-up {
+                0% { transform: scale(0.8); opacity: 0; }
+                100% { transform: scale(1); opacity: 1; }
+            }
+            .animate-scale-up {
+                animation: scale-up 0.3s ease-out;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // Floating Status Indicator
+    function showFloatingStatus(message, type = "info") {
+        const floatingDiv = document.createElement('div');
+        floatingDiv.className = `fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50`;
+        
+        const bgColor = type === 'success' ? 'bg-green-500' : 
+                       type === 'error' ? 'bg-red-500' : 
+                       type === 'warning' ? 'bg-yellow-500' : 'bg-blue-500';
+        
+        floatingDiv.innerHTML = `
+            <div class="${bgColor} text-white px-6 py-3 rounded-full shadow-xl flex items-center gap-3 animate-slide-up">
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 
+                                 type === 'error' ? 'exclamation-circle' : 
+                                 type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                <span class="font-medium">${message}</span>
+            </div>
+        `;
+        
+        document.body.appendChild(floatingDiv);
+        
+        // Auto remove after 3 seconds
+        setTimeout(() => {
+            floatingDiv.querySelector('div').classList.remove('animate-slide-up');
+            floatingDiv.querySelector('div').classList.add('animate-slide-down');
+            setTimeout(() => floatingDiv.remove(), 300);
+        }, 3000);
+        
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slide-up {
+                0% { transform: translateY(100px); opacity: 0; }
+                100% { transform: translateY(0); opacity: 1; }
+            }
+            @keyframes slide-down {
+                0% { transform: translateY(0); opacity: 1; }
+                100% { transform: translateY(100px); opacity: 0; }
+            }
+            .animate-slide-up {
+                animation: slide-up 0.5s ease-out;
+            }
+            .animate-slide-down {
+                animation: slide-down 0.5s ease-in;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // Search Blood Donors
+    async function searchBlood() {
+        const blood = document.getElementById('bloodSearch').value;
+        if (!blood) { 
+            showFloatingStatus("রক্তের গ্রুপ সিলেক্ট করুন!", "warning"); 
+            return; 
+        }
+        
+        const resultsDiv = document.getElementById("results");
+        const loader = document.getElementById("loader");
+        resultsDiv.innerHTML = "";
+        loader.classList.remove("hidden");
+
+        try {
+            const response = await fetch(`${API_URL}?blood=${encodeURIComponent(blood)}`);
+            const data = await response.json();
+            loader.classList.add("hidden");
+            
+            if (data.length === 0) {
+                resultsDiv.innerHTML = `
+                    <div class="text-center py-10 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl border border-gray-200">
+                        <div class="inline-flex items-center justify-center w-20 h-20 bg-gray-200 rounded-full mb-4">
+                            <i class="fas fa-search text-3xl text-gray-400"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-gray-700 mb-2">দুঃখিত, কোনো ডোনার পাওয়া যায়নি</h4>
+                        <p class="text-gray-500 mb-4">আপনার নির্বাচিত গ্রুপের কোনো ডোনার আমাদের ডাটাবেসে নেই</p>
+                        <button onclick="document.getElementById('donor-register-modal').classList.remove('hidden')"
+                                class="inline-flex items-center gap-2 bg-brand-secondary text-white px-5 py-2 rounded-lg font-medium hover:bg-red-700 transition">
+                            <i class="fas fa-user-plus"></i> প্রথম ডোনার হোন
+                        </button>
+                    </div>
+                `;
+                showFloatingStatus("কোনো ডোনার পাওয়া যায়নি", "warning");
+                return;
+            }
+
+            let htmlContent = "";
+            data.forEach(donor => {
+                const maskedPhone = donor.phone ? 
+                    '*'.repeat(donor.phone.length - 3) + donor.phone.slice(-3) : 
+                    '**********';
+                
+                htmlContent += `
+                    <div class="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-lg transition duration-200 group">
+                        <div class="flex justify-between items-start gap-4">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-12 h-12 bg-gradient-to-br from-red-100 to-red-200 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-user text-red-600"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-lg text-gray-800">${donor.name}</h4>
+                                        <div class="flex items-center gap-2">
+                                            <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1">
+                                                <i class="fas fa-tint"></i> ${donor.blood}
+                                            </span>
+                                            <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm flex items-center gap-1">
+                                                <i class="fas fa-map-marker-alt"></i> ${donor.area}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="space-y-3">
+                                    <div class="flex items-center text-gray-600">
+                                        <div class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center mr-2">
+                                            <i class="fas fa-phone text-gray-500"></i>
+                                        </div>
+                                        <span>ফোন: ${maskedPhone}</span>
+                                    </div>
+                                    
+                                    <div class="bg-gradient-to-r from-red-50 to-orange-50 border border-red-100 rounded-xl p-4">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                                <i class="fas fa-shield-alt text-red-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="text-sm text-red-700 font-medium mb-1">
+                                                    <span class="font-bold">${donor.name}</span> এর কন্টাক্ট ডিটেইলস পেতে এডমিনকে কল করুন
+                                                </p>
+                                                <div class="flex items-center gap-2 mt-2">
+                                                    <a href="tel:01798810051" 
+                                                       class="inline-flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-red-700 transition">
+                                                        <i class="fas fa-phone-alt"></i> কল করুন: 01798-810051
+                                                    </a>
+                                                    <a href="https://wa.me/8801798810051" 
+                                                       target="_blank"
+                                                       class="inline-flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-green-600 transition">
+                                                        <i class="fab fa-whatsapp"></i> WhatsApp
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            resultsDiv.innerHTML = htmlContent;
+            
+            // Show success with animation
+            const successDiv = document.createElement('div');
+            successDiv.className = "text-center py-4";
+            successDiv.innerHTML = `
+                <div class="inline-flex items-center gap-3 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl px-5 py-3 mb-4 animate-pulse">
+                    <i class="fas fa-check-circle text-2xl text-green-600"></i>
+                    <div class="text-left">
+                        <p class="font-bold text-green-700">${data.length} জন ডোনার পাওয়া গেছে!</p>
+                    </div>
+                </div>
+            `;
+            resultsDiv.insertBefore(successDiv, resultsDiv.firstChild);
+            
+        } catch (error) {
+            loader.classList.add("hidden");
+            showFloatingStatus("সার্ভার সমস্যা! আবার চেষ্টা করুন।", "error");
+        }
+    }
+
+    // Add New Donor
+    async function addDonor() {
+        const name = document.getElementById("regName").value.trim();
+        const blood = document.getElementById("regBlood").value;
+        const area = document.getElementById("regArea").value.trim();
+        const phone = document.getElementById("regPhone").value.trim();
+        const btn = document.getElementById("regBtn");
+
+        if(!name || !blood || !area || !phone) { 
+            showFloatingStatus("সবগুলো ঘর পূরণ করুন!", "warning"); 
+            return; 
+        }
+
+        // Phone number validation
+        const phoneRegex = /^(?:\+88|01[3-9])[0-9]{8}$/;
+        if (!phoneRegex.test(phone)) {
+            showNotification("সঠিক মোবাইল নম্বর দিন (01XXXXXXXXX)", "error");
+            return;
+        }
+
+        const originalText = btn.innerText;
+        btn.innerHTML = `
+            <span class="flex items-center justify-center gap-2">
+                <i class="fas fa-spinner fa-spin"></i>
+                যাচাই চলছে...
+            </span>
+        `;
+        btn.disabled = true;
+
+        try {
+            // Check if phone already exists
+            const checkUrl = `${API_URL}?checkPhone=${encodeURIComponent(phone)}`;
+            const checkRes = await fetch(checkUrl);
+            const status = await checkRes.text();
+
+            if (status.trim() === "EXISTS") {
+                showNotification("এই নম্বরটি ইতিমধ্যে রেজিস্টার্ড!", "error");
+                btn.innerText = originalText;
+                btn.disabled = false;
+                return;
+            }
+
+            // Submit new donor
+            const submitUrl = `${API_URL}?action=addDonor&name=${encodeURIComponent(name)}&blood=${encodeURIComponent(blood)}&area=${encodeURIComponent(area)}&phone=${encodeURIComponent(phone)}`;
+            const response = await fetch(submitUrl);
+            const result = await response.text();
+            
+            if (result.trim() === "SUCCESS") {
+                // Close modal first
+                document.getElementById('donor-register-modal').classList.add('hidden');
+                
+                // Show success modal after a short delay
+                setTimeout(() => {
+                    showSuccessModal(name);
+                }, 300);
+                
+                // Reset form
+                document.getElementById("regName").value = "";
+                document.getElementById("regBlood").value = "";
+                document.getElementById("regArea").value = "";
+                document.getElementById("regPhone").value = "";
+                
+                // Update stats
+                updateStats();
+                
+            } else if (result.trim() === "DUPLICATE") {
+                showNotification("এই নম্বরটি ইতিমধ্যে রেজিস্টার্ড!", "error");
+            } else {
+                showSuccessModal(name);
+            }
+            
+        } catch (error) {
+            console.error("Registration error:", error);
+            showNotification("নেটওয়ার্ক সমস্যা! আবার চেষ্টা করুন।", "error");
+        } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    }
+
+    // Update Statistics
+    function updateStats() {
+        const totalDonors = document.getElementById('totalDonors');
+        const activeDonors = document.getElementById('activeDonors');
+        
+        // Animate the number increment
+        const animateCounter = (element, newValue) => {
+            const current = parseInt(element.textContent);
+            const increment = newValue - current;
+            const duration = 1000; // 1 second
+            const step = increment / (duration / 16); // 60fps
+            
+            let currentValue = current;
+            const timer = setInterval(() => {
+                currentValue += step;
+                if ((step > 0 && currentValue >= newValue) || (step < 0 && currentValue <= newValue)) {
+                    currentValue = newValue;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.round(currentValue) + "+";
+            }, 16);
+        };
+        
+        animateCounter(totalDonors, 1201);
+        animateCounter(activeDonors, 351);
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add event listeners for Enter key
+        document.getElementById('bloodSearch').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') searchBlood();
+        });
+        
+        document.getElementById('regPhone').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') addDonor();
+        });
+    });
+</script>
+
 
     <!-- Transparency & Reports -->
     <section id="transparency" class="py-16 bg-white border-t border-gray-100">
@@ -408,178 +1025,860 @@
         </div>
     </section>
 
-    <!-- Volunteer Registration -->
-    <section id="volunteer" class="py-20 bg-gray-50">
-        <div class="container mx-auto px-4">
-            <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
-                <div class="bg-gray-800 p-6 text-center text-white">
-                    <h2 class="text-2xl font-bold">স্বেচ্ছাসেবক হিসেবে যোগ দিন</h2>
-                    <p class="text-gray-300 text-sm">টিম আগন্তুক-এ আপনাকে স্বাগতম</p>
+<!-- Volunteer Registration -->
+<section id="volunteer" class="py-20 bg-gradient-to-b from-gray-50 to-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                <span class="text-brand-primary">স্বেচ্ছাসেবক</span> হিসেবে যোগ দিন
+            </h2>
+            <div class="w-24 h-1 bg-brand-primary mx-auto rounded"></div>
+            <p class="mt-4 text-gray-600 max-w-2xl mx-auto">
+                টিম আগন্তুক-এর সাথে যুক্ত হয়ে মানবতার সেবায় অবদান রাখুন। আপনার সামান্য সময় ও শ্রম কারো বেঁচে থাকার স্বপ্ন হতে পারে।
+            </p>
+        </div>
+
+        <div class="max-w-4xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Benefits Sidebar -->
+                <div class="lg:col-span-1 space-y-6">
+                    <div class="bg-white rounded-xl shadow-lg p-6 border-t-4 border-brand-primary">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <i class="fas fa-star text-brand-accent"></i> সুবিধাসমূহ
+                        </h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                                <span class="text-gray-700">সার্টিফিকেট প্রদান</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                                <span class="text-gray-700">প্রশিক্ষণ সুবিধা</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                                <span class="text-gray-700">নেটওয়ার্কিং সুযোগ</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                                <span class="text-gray-700">মানবিক কাজের অভিজ্ঞতা</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-brand-primary to-blue-500 rounded-xl shadow-lg p-6 text-white">
+                        <h3 class="text-xl font-bold mb-4">ছবি আপলোড নির্দেশনা</h3>
+                        <ul class="space-y-2 text-sm">
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-info-circle mt-0.5"></i>
+                                <span>ছবির সাইজ: সর্বোচ্চ 2MB</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-info-circle mt-0.5"></i>
+                                <span>ফরম্যাট: JPG, PNG, JPEG</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-info-circle mt-0.5"></i>
+                                <span>স্পষ্ট এবং সামনের দিকের ছবি দিন</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-info-circle mt-0.5"></i>
+                                <span>ছবি গুগল ড্রাইভে সেভ হবে</span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-                <div class="p-8">
-                    <form onsubmit="handleVolunteerSubmit(event)" class="space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">আপনার নাম</label>
-                                <input type="text" required class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-primary">
+
+                <!-- Registration Form -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+                        <div class="bg-gradient-to-r from-gray-800 to-gray-900 p-6 text-center text-white">
+                            <h2 class="text-2xl font-bold">স্বেচ্ছাসেবক রেজিস্ট্রেশন ফর্ম</h2>
+                            <p class="text-gray-300 text-sm mt-1">সকল তথ্য সঠিকভাবে পূরণ করুন</p>
+                        </div>
+                        
+                        <div class="p-6 md:p-8">
+                            <form id="volunteerForm" onsubmit="handleVolunteerSubmit(event)" class="space-y-6" enctype="multipart/form-data">
+                                <!-- Photo Upload -->
+                                <div class="space-y-4">
+                                    <h3 class="text-lg font-bold text-gray-800 border-b pb-2">ছবি আপলোড</h3>
+                                    
+                                    <div class="flex flex-col items-center justify-center">
+                                        <!-- Image Preview -->
+                                        <div class="mb-4">
+                                            <div id="imagePreview" class="w-48 h-48 border-4 border-dashed border-gray-300 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
+                                                <div class="text-center p-4">
+                                                    <i class="fas fa-user text-gray-400 text-5xl mb-2"></i>
+                                                    <p class="text-gray-500 text-sm">ছবি দেখানো হবে</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- File Input -->
+                                        <div class="w-full max-w-sm">
+                                            <label for="volPhoto" class="cursor-pointer">
+                                                <div class="bg-gradient-to-r from-brand-primary to-blue-500 text-white py-3 px-6 rounded-lg font-bold hover:shadow-lg transition duration-300 flex items-center justify-center gap-2">
+                                                    <i class="fas fa-camera"></i>
+                                                    <span id="uploadButtonText">ছবি নির্বাচন করুন</span>
+                                                </div>
+                                                <input type="file" 
+                                                       id="volPhoto"
+                                                       name="photo"
+                                                       accept="image/*"
+                                                       class="hidden"
+                                                       onchange="previewImage(event)"
+                                                       required>
+                                            </label>
+                                            <p class="text-xs text-gray-500 text-center mt-2">
+                                                সর্বোচ্চ 2MB, JPG/PNG/JPEG ফরম্যাট
+                                            </p>
+                                        </div>
+                                        
+                                        <!-- File Info -->
+                                        <div id="fileInfo" class="hidden mt-2 text-center">
+                                            <p class="text-sm text-gray-600">
+                                                <span id="fileName"></span> 
+                                                <span id="fileSize" class="text-gray-500"></span>
+                                            </p>
+                                            <button type="button" onclick="removeImage()" 
+                                                    class="text-red-500 hover:text-red-700 text-sm mt-1">
+                                                <i class="fas fa-times mr-1"></i>ছবি সরান
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Personal Information -->
+                                <div class="space-y-4">
+                                    <h3 class="text-lg font-bold text-gray-800 border-b pb-2">ব্যক্তিগত তথ্য</h3>
+                                    
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                নাম <span class="text-red-500">*</span>
+                                            </label>
+                                            <input type="text" 
+                                                   id="volName"
+                                                   name="name"
+                                                   required 
+                                                   class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                পিতার নাম <span class="text-red-500">*</span>
+                                            </label>
+                                            <input type="text" 
+                                                   id="volFatherName"
+                                                   name="fatherName"
+                                                   required 
+                                                   class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition">
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                মাতার নাম <span class="text-red-500">*</span>
+                                            </label>
+                                            <input type="text" 
+                                                   id="volMotherName"
+                                                   name="motherName"
+                                                   required 
+                                                   class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                জন্ম তারিখ <span class="text-red-500">*</span>
+                                            </label>
+                                            <input type="date" 
+                                                   id="volDob"
+                                                   name="dob"
+                                                   required 
+                                                   max="2008-12-31"
+                                                   class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition">
+                                            <p class="text-xs text-gray-500 mt-1">বয়স কমপক্ষে ১৬ বছর হতে হবে</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Contact Information -->
+                                <div class="space-y-4">
+                                    <h3 class="text-lg font-bold text-gray-800 border-b pb-2">যোগাযোগের তথ্য</h3>
+                                    
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                মোবাইল নম্বর <span class="text-red-500">*</span>
+                                            </label>
+                                            <input type="tel" 
+                                                   id="volPhone"
+                                                   name="phone"
+                                                   required 
+                                                   pattern="[0][1][3-9]{1}[0-9]{8}"
+                                                   title="সঠিক মোবাইল নম্বর দিন (01XXXXXXXXX)"
+                                                   class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                ই-মেইল
+                                            </label>
+                                            <input type="email" 
+                                                   id="volEmail"
+                                                   name="email"
+                                                   class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition">
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                                            ঠিকানা <span class="text-red-500">*</span>
+                                        </label>
+                                        <textarea id="volAddress"
+                                                  name="address"
+                                                  rows="2"
+                                                  required 
+                                                  class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition"></textarea>
+                                    </div>
+                                </div>
+
+                                <!-- Additional Information -->
+                                <div class="space-y-4">
+                                    <h3 class="text-lg font-bold text-gray-800 border-b pb-2">অতিরিক্ত তথ্য</h3>
+                                    
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                ব্লাড গ্রুপ
+                                            </label>
+                                            <select id="volBloodGroup"
+                                                    name="bloodGroup"
+                                                    class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition">
+                                                <option value="">নির্বাচন করুন</option>
+                                                <option>A+</option><option>A-</option>
+                                                <option>B+</option><option>B-</option>
+                                                <option>O+</option><option>O-</option>
+                                                <option>AB+</option><option>AB-</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                                            মাসিক চাঁদা দিতে ইচ্ছুক?
+                                        </label>
+                                        <div class="flex flex-wrap gap-4 mt-2">
+                                            <label class="inline-flex items-center">
+                                                <input type="radio" 
+                                                       name="monthlyDonation"
+                                                       value="হ্যাঁ"
+                                                       class="text-brand-primary focus:ring-brand-primary">
+                                                <span class="ml-2">হ্যাঁ</span>
+                                            </label>
+                                            <label class="inline-flex items-center">
+                                                <input type="radio" 
+                                                       name="monthlyDonation"
+                                                       value="না"
+                                                       class="text-brand-primary focus:ring-brand-primary">
+                                                <span class="ml-2">না</span>
+                                            </label>
+                                            <label class="inline-flex items-center">
+                                                <input type="radio" 
+                                                       name="monthlyDonation"
+                                                       value="পরবর্তীতে সিদ্ধান্ত নিব"
+                                                       checked
+                                                       class="text-brand-primary focus:ring-brand-primary">
+                                                <span class="ml-2">পরবর্তীতে সিদ্ধান্ত নিব</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <div class="pt-4">
+                                    <button type="submit" 
+                                            id="volSubmitBtn"
+                                            class="w-full bg-gradient-to-r from-brand-primary to-blue-600 text-white py-4 rounded-xl font-bold text-lg hover:shadow-lg hover:scale-[1.02] transition duration-300 flex items-center justify-center gap-3">
+                                        <i class="fas fa-user-plus"></i> রেজিস্ট্রেশন করুন
+                                    </button>
+                                    <p class="text-xs text-gray-500 text-center mt-3">
+                                        রেজিস্ট্রেশন করলে আমাদের <a href="#" class="text-brand-primary hover:underline">নীতিমালা</a> ও <a href="#" class="text-brand-primary hover:underline">শর্তাবলী</a> মেনে নেওয়া হয়েছে বলে ধরে নেওয়া হবে
+                                    </p>
+                                </div>
+                            </form>
+
+                            <!-- Progress Bar (Hidden by default) -->
+                            <div id="uploadProgress" class="hidden mt-6">
+                                <div class="mb-2 flex justify-between text-sm text-gray-600">
+                                    <span>ছবি আপলোড হচ্ছে...</span>
+                                    <span id="progressPercent">0%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div id="progressBar" class="bg-brand-primary h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                                </div>
                             </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">ফোন নম্বর</label>
-                                <input type="tel" required class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-primary">
+
+                            <!-- Success Message (Hidden by default) -->
+                            <div id="successMessage" class="hidden mt-6 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6 text-center">
+                                <div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
+                                    <i class="fas fa-check text-3xl text-green-600"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-green-800 mb-2">রেজিস্ট্রেশন সফল!</h3>
+                                <p class="text-green-700 mb-4">
+                                    আপনার রেজিস্ট্রেশন সফলভাবে সম্পন্ন হয়েছে। অ্যাডমিন শীঘ্রই আপনার সাথে যোগাযোগ করবেন।
+                                </p>
+                                <p class="text-green-800 font-bold mb-2">
+                                    রেজিস্ট্রেশন আইডি: <span id="successId" class="text-brand-primary"></span>
+                                </p>
+                                <div id="photoLink" class="hidden mb-4">
+                                    <!-- Photo link will be inserted here dynamically -->
+                                </div>
+                                <button onclick="resetForm()" class="inline-flex items-center gap-2 bg-green-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-green-700 transition">
+                                    <i class="fas fa-redo"></i> নতুন রেজিস্ট্রেশন
+                                </button>
                             </div>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">ইমেইল (ঐচ্ছিক)</label>
-                            <input type="email" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-primary">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">আপনি কিভাবে সাহায্য করতে চান?</label>
-                            <select class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-primary">
-                                <option>মাঠকর্মী (Field Work)</option>
-                                <option>রক্তদান</option>
-                                <option>ফান্ডরাইজিং</option>
-                                <option>সোশ্যাল মিডিয়া মার্কেটিং</option>
-                                <option>গ্রাফিক্স ডিজাইন/আইটি</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="w-full bg-brand-primary text-white py-3 rounded font-bold hover:bg-brand-dark transition">রেজিস্ট্রেশন করুন</button>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-300 py-12">
-        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-                <div class="flex items-center gap-2 mb-4 text-white">
-                    <img src="Logopit_1567088486048.png" alt="Logo" class="h-10 w-auto bg-white rounded-full p-1">
-                    <span class="text-xl font-bold">আগন্তুক</span>
-                </div>
-                <p class="text-sm leading-relaxed mb-4">
-                    আগন্তুক একটি পরিবার, একটি অনুভূতির নাম। আমরা চাই এমন একটি সমাজ যেখানে কেউ না খেয়ে থাকবে না।
+<footer class="bg-gray-900 text-gray-300 py-12">
+    <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+            <div class="flex items-center gap-2 mb-4 text-white">
+                <img src="Logopit_1567088486048.png" alt="Logo" class="h-10 w-auto bg-white rounded-full p-1">
+                <span class="text-xl font-bold">আগন্তুক</span>
+            </div>
+            <p class="text-sm leading-relaxed mb-4">
+                আগন্তুক একটি পরিবার, একটি অনুভূতির নাম। আমরা চাই তারুণ্য শক্তিকে কাজে লাগিয়ে সমাজে অসাধারন কিছু করতে। 
+            </p>
+            <div class="flex gap-4">
+                <a href="#" class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center hover:bg-blue-600 transition"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center hover:bg-red-500 transition"><i class="fab fa-youtube"></i></a>
+                <a href="#" class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center hover:bg-pink-600 transition"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+        
+        <div>
+            <h3 class="text-white font-bold mb-4 border-b border-gray-700 pb-2 inline-block">লিংকস</h3>
+            <ul class="space-y-2 text-sm">
+                <li><a href="#about" class="hover:text-brand-primary transition">আমাদের সম্পর্কে</a></li>
+                <li><a href="#projects" class="hover:text-brand-primary transition">প্রজেক্টসমূহ</a></li>
+                <li><a href="#transparency" class="hover:text-brand-primary transition">ফিনান্সিয়াল রিপোর্ট</a></li>
+                <li><a href="#privacy" class="hover:text-brand-primary transition">গোপনীয়তা নীতি</a></li>
+            </ul>
+        </div>
+
+        <div>
+            <h3 class="text-white font-bold mb-4 border-b border-gray-700 pb-2 inline-block">যোগাযোগ</h3>
+            <ul class="space-y-3 text-sm">
+                <li class="flex items-start gap-3">
+                    <i class="fas fa-map-marker-alt mt-1 text-brand-primary"></i>
+                    <span>সাদাব্রিজ, আলমডাঙ্গা, চুয়াডাঙ্গা</span>
+                </li>
+                <li class="flex items-center gap-3">
+                    <i class="fas fa-phone-alt text-brand-primary"></i>
+                    <span>+880 1332-738981</span>
+                </li>
+                <li class="flex items-center gap-3">
+                    <i class="fas fa-envelope text-brand-primary"></i>
+                    <span>info@agantuk.org</span>
+                </li>
+            </ul>
+        </div>
+
+        <div>
+            <h3 class="text-white font-bold mb-4 border-b border-gray-700 pb-2 inline-block">নিউজলেটার</h3>
+            <p class="text-sm mb-3">আমাদের কার্যক্রমের আপডেট পেতে ইমেইল দিন।</p>
+            <form class="flex mb-4">
+                <input type="email" placeholder="Email Address" class="w-full px-3 py-2 rounded-l bg-gray-800 border-none focus:outline-none focus:ring-1 focus:ring-brand-primary text-sm">
+                <button class="bg-brand-primary px-4 rounded-r hover:bg-brand-dark transition"><i class="fas fa-paper-plane"></i></button>
+            </form>
+            
+            <!-- এডমিন লগইন বাটন -->
+            <div class="mt-4 pt-4 border-t border-gray-700">
+                <p class="text-xs text-gray-400 mb-2">এডমিন এক্সেস</p>
+                <a href="admin.html" 
+                   class="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                    <i class="fas fa-lock"></i>
+                    <span>এডমিন লগইন</span>
+                </a>
+                <p class="text-xs text-gray-500 mt-2">
+                    শুধুমাত্র অনুমোদিত কর্মকর্তাদের জন্য
                 </p>
-                <div class="flex gap-4">
-                    <a href="#" class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center hover:bg-blue-600 transition"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center hover:bg-red-500 transition"><i class="fab fa-youtube"></i></a>
-                    <a href="#" class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center hover:bg-pink-600 transition"><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
-            
-            <div>
-                <h3 class="text-white font-bold mb-4 border-b border-gray-700 pb-2 inline-block">লিংকস</h3>
-                <ul class="space-y-2 text-sm">
-                    <li><a href="#about" class="hover:text-brand-primary transition">আমাদের সম্পর্কে</a></li>
-                    <li><a href="#projects" class="hover:text-brand-primary transition">প্রজেক্টসমূহ</a></li>
-                    <li><a href="#transparency" class="hover:text-brand-primary transition">ফিনান্সিয়াল রিপোর্ট</a></li>
-                    <li><a href="#privacy" class="hover:text-brand-primary transition">গোপনীয়তা নীতি</a></li>
-                </ul>
-            </div>
-
-            <div>
-                <h3 class="text-white font-bold mb-4 border-b border-gray-700 pb-2 inline-block">যোগাযোগ</h3>
-                <ul class="space-y-3 text-sm">
-                    <li class="flex items-start gap-3">
-                        <i class="fas fa-map-marker-alt mt-1 text-brand-primary"></i>
-                        <span>মিরপুর ১০, ঢাকা-১২১৬, বাংলাদেশ</span>
-                    </li>
-                    <li class="flex items-center gap-3">
-                        <i class="fas fa-phone-alt text-brand-primary"></i>
-                        <span>+880 17XX-XXXXXX</span>
-                    </li>
-                    <li class="flex items-center gap-3">
-                        <i class="fas fa-envelope text-brand-primary"></i>
-                        <span>info@agantuk.org</span>
-                    </li>
-                </ul>
-            </div>
-
-            <div>
-                <h3 class="text-white font-bold mb-4 border-b border-gray-700 pb-2 inline-block">নিউজলেটার</h3>
-                <p class="text-sm mb-3">আমাদের কার্যক্রমের আপডেট পেতে ইমেইল দিন।</p>
-                <form class="flex">
-                    <input type="email" placeholder="Email Address" class="w-full px-3 py-2 rounded-l bg-gray-800 border-none focus:outline-none focus:ring-1 focus:ring-brand-primary text-sm">
-                    <button class="bg-brand-primary px-4 rounded-r hover:bg-brand-dark transition"><i class="fas fa-paper-plane"></i></button>
-                </form>
             </div>
         </div>
-        <div class="border-t border-gray-800 mt-12 pt-6 text-center text-sm text-gray-500">
-            &copy; ২০২৪ আগন্তুক ফাউন্ডেশন। সর্বস্বত্ব সংরক্ষিত। | Developed with <i class="fas fa-heart text-red-500"></i> by Agantuk Tech Team
-        </div>
-    </footer>
+    </div>
+    
+    <div class="border-t border-gray-800 mt-12 pt-6 text-center text-sm text-gray-500">
+        &copy; ২০২৪ আগন্তুক ফাউন্ডেশন। সর্বস্বত্ব সংরক্ষিত। | Developed with <i class="fas fa-heart text-red-500"></i> by Agantuk Tech Team
+    </div>
+</footer>
 
-    <!-- JavaScript for Interactivity -->
-    <script>
-        // Mobile Menu Toggle
-        function toggleMenu() {
-            const menu = document.getElementById('mobile-menu');
-            const icon = document.querySelector('nav button i');
+<!-- JavaScript for Volunteer Registration with Image Upload -->
+<script>
+    // আপনার Apps Script থেকে পাওয়া Web App URL এখানে বসান
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzCj3KQAUVuYB8xaiKqObcYNMi7lkWo9LKCmq99OHnruWEh0tHJm_8MTEC8Yg-x5eoH/exec'; 
+
+    let selectedFile = null;
+
+    // ১. ইমেজ প্রিভিউ এবং ফাইল সংরক্ষণ
+    function previewImage(event) {
+        const input = event.target;
+        const preview = document.getElementById('imagePreview');
+        const fileInfo = document.getElementById('fileInfo');
+        const uploadBtnText = document.getElementById('uploadButtonText');
+        
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
             
-            if (menu.classList.contains('hidden')) {
-                menu.classList.remove('hidden');
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-times');
-            } else {
-                menu.classList.add('hidden');
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
+            // সাইজ চেক (2MB = 2 * 1024 * 1024 bytes)
+            if (file.size > 2 * 1024 * 1024) {
+                alert("দুঃখিত! ছবির সাইজ ২ মেগাবাইটের বেশি হতে পারবে না।");
+                removeImage();
+                return;
             }
+
+            selectedFile = file; // গ্লোবাল ভেরিয়েবলে ফাইল রাখা হলো
+
+            // প্রিভিউ আপডেট
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover" alt="Preview">`;
+            }
+            reader.readAsDataURL(file);
+
+            // ফাইল ইনফো আপডেট
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileSize').textContent = '(' + (file.size / 1024).toFixed(1) + ' KB)';
+            
+            fileInfo.classList.remove('hidden');
+            uploadBtnText.textContent = "ছবি পরিবর্তন করুন";
         }
+    }
 
-        // Navbar Shadow on Scroll
-        window.addEventListener('scroll', () => {
-            const nav = document.getElementById('navbar');
-            if (window.scrollY > 50) {
-                nav.classList.add('shadow-lg');
-            } else {
-                nav.classList.remove('shadow-lg');
-            }
+    // ২. ইমেজ মুছে ফেলা
+    function removeImage() {
+        const input = document.getElementById('volPhoto');
+        input.value = '';
+        selectedFile = null;
+        
+        document.getElementById('imagePreview').innerHTML = `
+            <div class="text-center p-4">
+                <i class="fas fa-user text-gray-400 text-5xl mb-2"></i>
+                <p class="text-gray-500 text-sm">ছবি দেখানো হবে</p>
+            </div>`;
+        
+        document.getElementById('fileInfo').classList.add('hidden');
+        document.getElementById('uploadButtonText').textContent = "ছবি নির্বাচন করুন";
+    }
+
+    // ৩. ফাইলকে Base64 এ কনভার্ট করার ফাংশন
+    function getBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
         });
+    }
 
-        // Animated Counters
+    // ৪. ফর্ম সাবমিট হ্যান্ডলার
+    async function handleVolunteerSubmit(event) {
+        event.preventDefault();
+        
+        const form = document.getElementById('volunteerForm');
+        const submitBtn = document.getElementById('volSubmitBtn');
+        const progressDiv = document.getElementById('uploadProgress');
+        const progressBar = document.getElementById('progressBar');
+        const progressPercent = document.getElementById('progressPercent');
+        const successMessage = document.getElementById('successMessage');
+
+        // লোডিং শুরু
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> প্রসেসিং হচ্ছে...';
+        progressDiv.classList.remove('hidden');
+
+        // ডাটা সংগ্রহ
+        const formData = new FormData(form);
+        let data = {};
+        formData.forEach((value, key) => data[key] = value);
+
+        // প্রোগ্রেস বার এনিমেশন (ফেক প্রোগ্রেস কারণ fetch প্রোগ্রেস দেয় না)
+        let progress = 0;
+        const interval = setInterval(() => {
+            if (progress < 90) {
+                progress += 5;
+                progressBar.style.width = progress + '%';
+                progressPercent.textContent = progress + '%';
+            }
+        }, 300);
+
+        try {
+            // যদি ছবি থাকে তবে Base64 এ কনভার্ট করে ডাটার সাথে যুক্ত করা
+            if (selectedFile) {
+                const base64File = await getBase64(selectedFile);
+                data.file = {
+                    data: base64File,
+                    mimeType: selectedFile.type,
+                    name: selectedFile.name
+                };
+            }
+
+            // Google Apps Script এ রিকোয়েস্ট পাঠানো
+            const response = await fetch(scriptURL, {
+                method: 'POST',
+                body: JSON.stringify(data)
+                // কোন headers বা mode: 'no-cors' দেবেন না, এটি text/plain হিসেবে যাবে যা CORS বাইপাস করে
+            });
+
+            const result = await response.json();
+
+            clearInterval(interval);
+            progressBar.style.width = '100%';
+            progressPercent.textContent = '100%';
+
+            if (result.result === 'success') {
+                // সফল হলে
+                form.classList.add('hidden'); // ফর্ম লুকান
+                progressDiv.classList.add('hidden'); // প্রোগ্রেস লুকান
+                successMessage.classList.remove('hidden'); // সাকসেস মেসেজ দেখান
+                document.getElementById('successId').textContent = "190" + String(result.row).padStart(4, '0');
+                
+                // কনসোল ক্লিয়ার বা রিসেট
+                console.log("Success:", result);
+            } else {
+                throw new Error(result.error);
+            }
+
+        } catch (error) {
+            console.error('Error!', error.message);
+            alert('দুঃখিত! সাবমিট করতে সমস্যা হয়েছে। দয়া করে আবার চেষ্টা করুন।\nএরর: ' + error.message);
+            
+            // রিসেট বাটন এবং প্রোগ্রেস
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> রেজিস্ট্রেশন করুন';
+            progressDiv.classList.add('hidden');
+            clearInterval(interval);
+        }
+    }
+
+    // ৫. ফর্ম রিসেট ফাংশন
+    function resetForm() {
+        document.getElementById('volunteerForm').reset();
+        removeImage();
+        document.getElementById('volunteerForm').classList.remove('hidden');
+        document.getElementById('successMessage').classList.add('hidden');
+        document.getElementById('volSubmitBtn').disabled = false;
+        document.getElementById('volSubmitBtn').innerHTML = '<i class="fas fa-user-plus"></i> রেজিস্ট্রেশন করুন';
+    }
+</script>
+
+<!-- Navigation Menu Toggle -->
+<script>
+    function toggleMenu() {
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenu.classList.toggle('hidden');
+    }
+    
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function(event) {
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuButton = document.querySelector('button[onclick="toggleMenu()"]');
+        
+        if (!mobileMenu.contains(event.target) && !menuButton.contains(event.target) && !mobileMenu.classList.contains('hidden')) {
+            mobileMenu.classList.add('hidden');
+        }
+    });
+    
+    // Animate counter on scroll
+    document.addEventListener('DOMContentLoaded', function() {
         const counters = document.querySelectorAll('.counter');
         const speed = 200;
-
-        const animateCounters = () => {
-            counters.forEach(counter => {
-                const updateCount = () => {
-                    const target = +counter.getAttribute('data-target');
-                    const count = +counter.innerText;
-                    const inc = target / speed;
-
-                    if (count < target) {
-                        counter.innerText = Math.ceil(count + inc);
-                        setTimeout(updateCount, 20);
-                    } else {
-                        counter.innerText = target + (target > 100 ? '+' : '');
-                    }
-                };
-                updateCount();
-            });
-        };
-
-        // Trigger animation when stats section is in view
-        let counted = false;
+        
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting && !counted) {
-                    animateCounters();
-                    counted = true;
+                if (entry.isIntersecting) {
+                    const counter = entry.target;
+                    const target = +counter.getAttribute('data-target');
+                    const count = +counter.innerText;
+                    
+                    const inc = target / speed;
+                    
+                    if (count < target) {
+                        const updateCount = () => {
+                            const newCount = Math.ceil(count + inc);
+                            if (newCount < target) {
+                                counter.innerText = newCount;
+                                setTimeout(updateCount, 1);
+                            } else {
+                                counter.innerText = target + '+';
+                            }
+                        };
+                        updateCount();
+                    }
+                    
+                    observer.unobserve(counter);
                 }
             });
+        }, { threshold: 0.5 });
+        
+        counters.forEach(counter => {
+            observer.observe(counter);
         });
+    });
 
-        const statsSection = document.querySelector('.counter').parentElement.parentElement;
-        if(statsSection) observer.observe(statsSection);
 
-        // Volunteer Form Handling
-        function handleVolunteerSubmit(e) {
-            e.preventDefault();
-            // In a real app, send data to backend/Firebase here
-            alert("ধন্যবাদ! আপনার রেজিস্ট্রেশন সফল হয়েছে। আমরা শীঘ্রই আপনার সাথে যোগাযোগ করব।");
-            e.target.reset();
+
+    document.addEventListener('DOMContentLoaded', function() {
+    loadWebsiteData();
+    setupDataSync();
+    });
+   
+    // Load data from localStorage or use defaults
+    function loadWebsiteData() {
+        // Load stats
+        const stats = JSON.parse(localStorage.getItem('agantuk_stats_main') || localStorage.getItem('agantuk_stats') || '{}');
+        if (stats.people || stats.blood || stats.projects || stats.volunteers) {
+            updateWebsiteStats(stats);
         }
-    </script>
+        
+        // Load about section
+        const about = JSON.parse(localStorage.getItem('agantuk_about_main') || localStorage.getItem('agantuk_about') || '{}');
+        if (about.title || about.content) {
+            updateWebsiteAbout(about);
+        }
+        
+        // Load projects
+        const projects = JSON.parse(localStorage.getItem('agantuk_projects_main') || localStorage.getItem('agantuk_projects') || '[]');
+        if (projects.length > 0) {
+            updateWebsiteProjects(projects);
+        }
+        
+        // Load reports
+        const reports = JSON.parse(localStorage.getItem('agantuk_reports_main') || localStorage.getItem('agantuk_reports') || '[]');
+        if (reports.length > 0) {
+            updateWebsiteReports(reports);
+        }
+    }
+    
+    // Update website stats
+    function updateWebsiteStats(stats) {
+        // Update counter elements
+        if (stats.people) {
+            const counter = document.querySelector('.counter[data-target]');
+            if (counter) {
+                counter.setAttribute('data-target', stats.people);
+                counter.textContent = '0';
+            }
+        }
+        
+        // Update other stats if needed
+        console.log('Stats updated:', stats);
+    }
+    
+    // Update website about section
+    function updateWebsiteAbout(about) {
+        const aboutSection = document.getElementById('about');
+        if (aboutSection && about.title) {
+            // Update title
+            const titleElement = aboutSection.querySelector('h2');
+            if (titleElement) {
+                titleElement.innerHTML = about.title.replace('মানবতার', '<span class="text-brand-secondary">মানবতার</span>');
+            }
+            
+            // Update content
+            const contentElement = aboutSection.querySelector('p.text-gray-600');
+            if (contentElement && about.content) {
+                contentElement.textContent = about.content;
+            }
+            
+            // Update vision
+            const visionElement = aboutSection.querySelector('p.text-sm.text-gray-600');
+            if (visionElement && about.vision) {
+                // Find the vision paragraph (first one after "আমাদের লক্ষ্য")
+                const visionDiv = aboutSection.querySelector('div:has(+ div)');
+                if (visionDiv) {
+                    const visionText = visionDiv.querySelector('p.text-sm.text-gray-600');
+                    if (visionText) visionText.textContent = about.vision;
+                }
+            }
+            
+            // Update mission
+            const missionElements = aboutSection.querySelectorAll('p.text-sm.text-gray-600');
+            if (missionElements.length > 1 && about.mission) {
+                missionElements[1].textContent = about.mission;
+            }
+        }
+    }
+    
+    // Update website projects
+    function updateWebsiteProjects(projects) {
+        const projectsContainer = document.querySelector('#projects .grid');
+        if (projectsContainer && projects.length > 0) {
+            // Clear existing projects
+            projectsContainer.innerHTML = '';
+            
+            // Add new projects (max 3 for homepage)
+            const displayProjects = projects.slice(0, 3);
+            
+            displayProjects.forEach(project => {
+                const projectCard = createProjectCard(project);
+                projectsContainer.appendChild(projectCard);
+            });
+        }
+    }
+    
+    // Create project card HTML
+    function createProjectCard(project) {
+        const progressPercent = Math.round((project.collected / project.target) * 100) || 0;
+        const statusColors = {
+            'চলমান': 'bg-brand-primary',
+            'জরুরি': 'bg-brand-secondary',
+            'মাসিক': 'bg-brand-accent'
+        };
+        
+        const statusColor = statusColors[project.status] || 'bg-brand-primary';
+        
+        return document.createRange().createContextualFragment(`
+            <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition group border-t-4 ${statusColor}">
+                <div class="relative overflow-hidden h-48">
+                    <img src="https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                         class="w-full h-full object-cover transition transform group-hover:scale-110" 
+                         alt="${project.name}">
+                    <div class="absolute top-4 right-4 ${statusColor} text-white text-xs px-3 py-1 rounded-full">
+                        ${project.status}
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold mb-2">${project.name}</h3>
+                    <p class="text-gray-600 text-sm mb-4">${project.description}</p>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+                        <div class="${statusColor} h-2.5 rounded-full" style="width: ${progressPercent}%"></div>
+                    </div>
+                    <div class="flex justify-between text-xs text-gray-500 mb-4">
+                        <span>সংগৃহীত: ${project.collected.toLocaleString()}</span>
+                        <span>লক্ষ্য: ${project.target.toLocaleString()}</span>
+                    </div>
+                    <button onclick="document.getElementById('donate').scrollIntoView()" 
+                            class="w-full border ${statusColor.replace('bg-', 'border-')} ${statusColor.replace('bg-', 'text-')} py-2 rounded font-semibold hover:${statusColor} hover:text-white transition">
+                        সহায়তা করুন
+                    </button>
+                </div>
+            </div>
+        `);
+    }
+    
+    // Update website reports
+    function updateWebsiteReports(reports) {
+        const reportsContainer = document.querySelector('#transparency .grid');
+        if (reportsContainer && reports.length > 0) {
+            // Clear existing reports
+            reportsContainer.innerHTML = '';
+            
+            // Add new reports (max 2 for homepage)
+            const displayReports = reports.slice(0, 2);
+            
+            displayReports.forEach(report => {
+                const reportCard = createReportCard(report);
+                reportsContainer.appendChild(reportCard);
+            });
+        }
+    }
+    
+    // Create report card HTML
+    function createReportCard(report) {
+        return document.createRange().createContextualFragment(`
+            <div class="border rounded-lg p-6 hover:shadow-md transition text-left flex items-center justify-between border-l-4 border-l-brand-primary">
+                <div>
+                    <h4 class="font-bold text-lg">${report.title}</h4>
+                    <p class="text-sm text-gray-500">${report.period}</p>
+                    <p class="text-sm text-gray-500 mt-1">${report.description}</p>
+                </div>
+                <a href="${report.fileLink || '#'}" 
+                   target="_blank"
+                   class="text-brand-primary hover:bg-blue-50 p-2 rounded-full transition">
+                    <i class="fas fa-download text-xl"></i>
+                </a>
+            </div>
+        `);
+    }
+    
+    // Setup data synchronization
+    function setupDataSync() {
+        // Check for updates every 30 seconds
+        setInterval(loadWebsiteData, 30000);
+        
+        // Also check when page becomes visible again
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                loadWebsiteData();
+            }
+        });
+        
+        // Listen for storage events (when admin panel updates data)
+        window.addEventListener('storage', function(event) {
+            if (event.key && event.key.startsWith('agantuk_')) {
+                console.log('Data updated from another tab:', event.key);
+                loadWebsiteData();
+            }
+        });
+    }
+    
+    // Function to force reload data (can be called from admin panel)
+    function reloadWebsiteData() {
+        loadWebsiteData();
+        showNotification('ডাটা রিফ্রেশ করা হয়েছে', 'success');
+    }
+    
+    // Show notification on main website
+    function showNotification(message, type = "info") {
+        // Remove existing notification
+        const existing = document.querySelector('.website-notification');
+        if (existing) existing.remove();
+        
+        // Create notification
+        const notification = document.createElement('div');
+        notification.className = `website-notification fixed top-6 right-6 z-50 w-80`;
+        
+        const colors = {
+            success: 'bg-green-500',
+            error: 'bg-red-500',
+            warning: 'bg-yellow-500',
+            info: 'bg-blue-500'
+        };
+        
+        notification.innerHTML = `
+            <div class="${colors[type]} text-white rounded-xl shadow-2xl p-4 transform translate-x-20 opacity-0 transition-all duration-300">
+                <div class="flex items-center">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'} text-xl mr-3"></i>
+                    <p class="flex-1">${message}</p>
+                    <button onclick="this.parentElement.parentElement.remove()" class="ml-2">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Animate in
+        setTimeout(() => {
+            notification.querySelector('div').classList.remove('translate-x-20', 'opacity-0');
+        }, 10);
+        
+        // Auto remove after 3 seconds
+        setTimeout(() => {
+            notification.querySelector('div').classList.add('translate-x-20', 'opacity-0');
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+ }
+</script>
+
+
+
+
 </body>
 </html>
