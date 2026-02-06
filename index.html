@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>আগন্তুক | মানবতার সেবায় সর্বদা</title>
+    
+    <!-- Google Fonts: Hind Siliguri for Bangla -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS (CDN for standalone file) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            primary: '#3B82F6', // Blue from Main Logo blocks
+                            secondary: '#D32F2F', // Red from Main Logo text
+                            dark: '#1E40AF',    // Darker Blue for hover
+                            light: '#EFF6FF',   // Light Blue background
+                            accent: '#F59E0B'   // Amber/Orange from Secondary Logo
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Hind Siliguri"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3B82F6; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #1E40AF; 
+        }
+        
+        .hero-overlay {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6));
+        }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="font-sans text-gray-800 bg-white">
+
+    <!-- Navigation Bar -->
+    <nav class="fixed w-full z-50 bg-white shadow-md top-0 transition-all duration-300" id="navbar">
+        <div class="container mx-auto px-4 py-2 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-2 group">
+                <!-- Main Logo -->
+                <img src="Logopit_1567088486048.png" alt="Agantuk Logo" class="h-14 w-auto transition-transform group-hover:scale-105">
+                <div class="hidden sm:block">
+                    <!-- Text Color matched to Logo Red -->
+                    <h1 class="text-2xl font-bold text-brand-secondary leading-none">আগন্তুক</h1>
+                    <span class="text-xs text-brand-primary font-bold tracking-wider">মানবতার সেবায় সর্বদা</span>
+                </div>
+            </a>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center gap-6 font-medium text-gray-700">
+                <a href="#home" class="hover:text-brand-primary transition">হোম</a>
+                <a href="#about" class="hover:text-brand-primary transition">আমাদের সম্পর্কে</a>
+                <a href="#projects" class="hover:text-brand-primary transition">প্রজেক্টসমূহ</a>
+                <a href="#blood-bank" class="text-brand-secondary hover:text-red-700 font-semibold transition flex items-center gap-1">
+                    <i class="fas fa-tint"></i> ব্লাড ব্যাংক
+                </a>
+                <a href="#transparency" class="hover:text-brand-primary transition">স্বচ্ছতা</a>
+                <a href="#donate" class="bg-brand-primary text-white px-5 py-2 rounded-full hover:bg-brand-dark transition shadow-lg transform hover:-translate-y-0.5 border-2 border-transparent hover:border-brand-primary">
+                    দান করুন
+                </a>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button onclick="toggleMenu()" class="md:hidden text-brand-primary text-2xl focus:outline-none">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 absolute w-full shadow-lg">
+            <div class="flex flex-col p-4 gap-4 font-medium text-center">
+                <a href="#home" onclick="toggleMenu()" class="block py-2 text-gray-700 hover:bg-gray-50 rounded">হোম</a>
+                <a href="#about" onclick="toggleMenu()" class="block py-2 text-gray-700 hover:bg-gray-50 rounded">আমাদের সম্পর্কে</a>
+                <a href="#projects" onclick="toggleMenu()" class="block py-2 text-gray-700 hover:bg-gray-50 rounded">প্রজেক্টসমূহ</a>
+                <a href="#blood-bank" onclick="toggleMenu()" class="block py-2 text-brand-secondary bg-red-50 rounded font-semibold">ব্লাড ব্যাংক</a>
+                <a href="#transparency" onclick="toggleMenu()" class="block py-2 text-gray-700 hover:bg-gray-50 rounded">স্বচ্ছতা</a>
+                <a href="#donate" onclick="toggleMenu()" class="block py-3 bg-brand-primary text-white rounded shadow">দান করুন</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="home" class="relative pt-24 pb-20 md:pt-32 md:pb-32 min-h-[85vh] flex items-center justify-center bg-gray-900 overflow-hidden">
+        <!-- Background Image -->
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Volunteers Helping" class="w-full h-full object-cover opacity-30">
+            <!-- Blue Overlay to match brand -->
+            <div class="absolute inset-0 bg-blue-900 mix-blend-multiply opacity-60"></div>
+        </div>
+        
+        <div class="container mx-auto px-4 relative z-10 text-center text-white">
+            <span class="inline-block bg-brand-primary bg-opacity-90 px-4 py-1 rounded-full text-sm font-semibold mb-4 animate-pulse border border-blue-400">
+                স্বাগত আগন্তুক পরিবারে
+            </span>
+            <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+                আপনার একটু সহানুভূতি,<br>কারও বাঁচার <span class="text-brand-accent">স্বপ্ন</span>
+            </h1>
+            <p class="text-lg md:text-xl text-blue-50 mb-8 max-w-2xl mx-auto">
+                আমরা সুবিধাবঞ্চিত মানুষের পাশে দাঁড়াই। আমাদের লক্ষ্য একটি বৈষম্যহীন ও মানবিক সমাজ গড়ে তোলা।
+            </p>
+            <div class="flex flex-col md:flex-row gap-4 justify-center">
+                <a href="#donate" class="bg-brand-secondary hover:bg-red-700 text-white px-8 py-3 rounded-lg font-bold text-lg transition shadow-xl flex items-center justify-center gap-2">
+                    <i class="fas fa-heart"></i> পাশে দাঁড়ান
+                </a>
+                <a href="#volunteer" class="bg-white hover:bg-blue-50 text-brand-primary px-8 py-3 rounded-lg font-bold text-lg transition shadow-xl flex items-center justify-center gap-2">
+                    <i class="fas fa-users"></i> স্বেচ্ছাসেবক হোন
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Impact Stats (Live Counter) -->
+    <section class="py-12 bg-brand-light -mt-8 relative z-20 mx-4 md:mx-16 rounded-xl shadow-lg border-b-4 border-brand-primary">
+        <div class="container mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-gray-300">
+            <div>
+                <div class="text-4xl font-bold text-brand-primary mb-1 counter" data-target="5000">0</div>
+                <div class="text-sm md:text-base text-gray-600 font-medium">উপকৃত মানুষ</div>
+            </div>
+            <div>
+                <div class="text-4xl font-bold text-brand-secondary mb-1 counter" data-target="1200">0</div>
+                <div class="text-sm md:text-base text-gray-600 font-medium">রক্তদান সম্পন্ন</div>
+            </div>
+            <div>
+                <div class="text-4xl font-bold text-brand-primary mb-1 counter" data-target="50">0</div>
+                <div class="text-sm md:text-base text-gray-600 font-medium">চলমান প্রজেক্ট</div>
+            </div>
+            <div class="border-none">
+                <div class="text-4xl font-bold text-brand-accent mb-1 counter" data-target="350">0</div>
+                <div class="text-sm md:text-base text-gray-600 font-medium">স্বেচ্ছাসেবক</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <div class="w-full md:w-1/2 flex justify-center">
+                    <!-- Secondary Logo (Hands) used here -->
+                    <img src="Logopit_1595774565335.png" alt="Volunteer Hands - Unity" class="w-full max-w-sm mx-auto drop-shadow-xl hover:scale-105 transition duration-500">
+                </div>
+                <div class="w-full md:w-1/2">
+                    <h4 class="text-brand-primary font-bold text-lg mb-2 uppercase tracking-wide">আমাদের সম্পর্কে</h4>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-6">আগন্তুক: <span class="text-brand-secondary">মানবতার</span> এক নতুন পথচলা</h2>
+                    <p class="text-gray-600 mb-4 leading-relaxed">
+                        আগন্তুক একটি অরাজনৈতিক, অলাভজনক এবং স্বেচ্ছাসেবী সংগঠন। আমরা বিশ্বাস করি, সমাজের বিত্তবান ও সুবিধাবঞ্চিত মানুষের মধ্যে সেতুবন্ধন তৈরি করলেই একটি সুন্দর পৃথিবী গড়া সম্ভব।
+                    </p>
+                    
+                    <div class="space-y-4 mt-6">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-blue-100 p-3 rounded-full text-brand-primary">
+                                <i class="fas fa-eye text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg">আমাদের লক্ষ্য (Vision)</h3>
+                                <p class="text-sm text-gray-600">ক্ষুধা ও দারিদ্র্যমুক্ত একটি স্বনির্ভর বাংলাদেশ গড়া।</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="bg-blue-100 p-3 rounded-full text-brand-primary">
+                                <i class="fas fa-bullseye text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg">আমাদের উদ্দেশ্য (Mission)</h3>
+                                <p class="text-sm text-gray-600">শিক্ষা, স্বাস্থ্য এবং মৌলিক অধিকার নিশ্চিত করতে সম্মিলিত প্রচেষ্টা।</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">আমাদের চলমান প্রজেক্টসমূহ</h2>
+                <div class="w-24 h-1 bg-brand-primary mx-auto rounded"></div>
+                <p class="mt-4 text-gray-600">সমাজের পিছিয়ে পড়া মানুষের মুখে হাসি ফোটাতে আমাদের ক্ষুদ্র প্রচেষ্টা</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Project 1: Swabolombi -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition group border-t-4 border-brand-primary">
+                    <div class="relative overflow-hidden h-48">
+                        <img src="https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover transition transform group-hover:scale-110" alt="Donation">
+                        <div class="absolute top-4 right-4 bg-brand-primary text-white text-xs px-3 py-1 rounded-full">চলমান</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">প্রজেক্ট স্বাবলম্বী</h3>
+                        <p class="text-gray-600 text-sm mb-4">রিকশা, ভ্যান বা সেলাই মেশিন বিতরণের মাধ্যমে কর্মসংস্থান তৈরি করা।</p>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+                            <div class="bg-brand-primary h-2.5 rounded-full" style="width: 70%"></div>
+                        </div>
+                        <div class="flex justify-between text-xs text-gray-500 mb-4">
+                            <span>সংগৃহীত: ৭০,০০০</span>
+                            <span>লক্ষ্য: ১,০০,০০০</span>
+                        </div>
+                        <button onclick="document.getElementById('donate').scrollIntoView()" class="w-full border border-brand-primary text-brand-primary py-2 rounded font-semibold hover:bg-brand-primary hover:text-white transition">সহায়তা করুন</button>
+                    </div>
+                </div>
+
+                <!-- Project 2: Blood Bank -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition group border-t-4 border-brand-secondary">
+                    <div class="relative overflow-hidden h-48">
+                        <img src="https://images.unsplash.com/photo-1615461066841-6116e61058f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover transition transform group-hover:scale-110" alt="Blood Donation">
+                        <div class="absolute top-4 right-4 bg-brand-secondary text-white text-xs px-3 py-1 rounded-full">জরুরি</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">জরুরি রক্তদান</h3>
+                        <p class="text-gray-600 text-sm mb-4"> মুমূর্ষু রোগীর জন্য বিনামূল্যে রক্তদাতা খুঁজে দেওয়া এবং রক্তদান ক্যাম্পেইন।</p>
+                        <div class="flex items-center gap-2 mb-4 text-sm text-gray-500">
+                            <i class="fas fa-check-circle text-brand-primary"></i> ১০০০+ ব্যাগ রক্ত সংগ্রহ
+                        </div>
+                        <a href="#blood-bank" class="block w-full text-center border border-brand-secondary text-brand-secondary py-2 rounded font-semibold hover:bg-brand-secondary hover:text-white transition">রক্তদাতা খুঁজুন</a>
+                    </div>
+                </div>
+
+                <!-- Project 3: Food Support -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition group border-t-4 border-brand-accent">
+                    <div class="relative overflow-hidden h-48">
+                        <img src="https://images.unsplash.com/photo-1594708767771-a7502209ff51?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover transition transform group-hover:scale-110" alt="Food">
+                        <div class="absolute top-4 right-4 bg-brand-accent text-white text-xs px-3 py-1 rounded-full">মাসিক</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">আহার প্রজেক্ট</h3>
+                        <p class="text-gray-600 text-sm mb-4">পথশিশু ও অসহায় পরিবারগুলোর মাঝে মাসিক খাদ্য সামগ্রী বিতরণ।</p>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+                            <div class="bg-brand-accent h-2.5 rounded-full" style="width: 45%"></div>
+                        </div>
+                         <div class="flex justify-between text-xs text-gray-500 mb-4">
+                            <span>পরিবার: ৪৫ টি</span>
+                            <span>লক্ষ্য: ১০০ টি</span>
+                        </div>
+                        <button onclick="document.getElementById('donate').scrollIntoView()" class="w-full border border-brand-accent text-brand-accent py-2 rounded font-semibold hover:bg-brand-accent hover:text-white transition">খাবার দিন</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blood Bank Section -->
+    <section id="blood-bank" class="py-20 bg-red-50 relative">
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-12">
+                
+                <!-- Search & Info -->
+                <div class="w-full md:w-1/2">
+                    <span class="text-brand-secondary font-bold tracking-widest uppercase">জীবন বাঁচান</span>
+                    <h2 class="text-4xl font-bold text-gray-800 mt-2 mb-6">আগন্তুক ব্লাড ব্যাংক</h2>
+                    <p class="text-gray-600 mb-8">জরুরি প্রয়োজনে রক্তের সন্ধান পেতে অথবা ডোনার হিসেবে রেজিস্ট্রেশন করতে আমরা আছি আপনার পাশে।</p>
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-brand-secondary">
+                        <h3 class="font-bold text-xl mb-4 text-gray-800">রক্তদাতা খুঁজুন</h3>
+                        <form onsubmit="event.preventDefault(); alert('ডেমো সাইট: সার্চ ফিচার শীঘ্রই আসছে!');" class="space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <select class="w-full p-3 border rounded bg-gray-50 focus:outline-none focus:ring-2 focus:ring-brand-secondary">
+                                    <option>রক্তের গ্রুপ</option>
+                                    <option>A+</option>
+                                    <option>B+</option>
+                                    <option>AB+</option>
+                                    <option>O+</option>
+                                    <option>O-</option>
+                                </select>
+                                <select class="w-full p-3 border rounded bg-gray-50 focus:outline-none focus:ring-2 focus:ring-brand-secondary">
+                                    <option>জেলা/এলাকা</option>
+                                    <option>ঢাকা</option>
+                                    <option>চট্টগ্রাম</option>
+                                    <option>সিলেট</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="w-full bg-brand-secondary text-white py-3 rounded font-bold hover:bg-red-700 transition">
+                                <i class="fas fa-search"></i> সন্ধান করুন
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="mt-6 flex gap-4">
+                        <button class="flex-1 bg-white border border-brand-secondary text-brand-secondary py-3 rounded font-bold hover:bg-red-50 transition">
+                            <i class="fab fa-whatsapp"></i> জরুরি যোগাযোগ
+                        </button>
+                        <button class="flex-1 bg-gray-800 text-white py-3 rounded font-bold hover:bg-black transition">
+                            ডোনার রেজিস্ট্রেশন
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Graphic/Image side -->
+                <div class="w-full md:w-1/2 flex justify-center">
+                    <div class="relative">
+                        <div class="absolute -inset-4 bg-red-200 rounded-full blur-2xl opacity-50 animate-pulse"></div>
+                        <img src="https://cdn-icons-png.flaticon.com/512/4813/4813084.png" alt="Blood Donation Vector" class="w-64 md:w-80 relative z-10 drop-shadow-xl">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Transparency & Reports -->
+    <section id="transparency" class="py-16 bg-white border-t border-gray-100">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8">স্বচ্ছতা ও জবাবদিহিতা</h2>
+            <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="border rounded-lg p-6 hover:shadow-md transition text-left flex items-center justify-between border-l-4 border-l-brand-primary">
+                    <div>
+                        <h4 class="font-bold text-lg">মাসিক আয়-ব্যয় রিপোর্ট (জানুয়ারি ২০২৪)</h4>
+                        <p class="text-sm text-gray-500">আপডেট: ১ ফেব্রুয়ারি, ২০২৪</p>
+                    </div>
+                    <button class="text-brand-primary hover:bg-blue-50 p-2 rounded-full transition">
+                        <i class="fas fa-download text-xl"></i>
+                    </button>
+                </div>
+                <div class="border rounded-lg p-6 hover:shadow-md transition text-left flex items-center justify-between border-l-4 border-l-brand-primary">
+                    <div>
+                        <h4 class="font-bold text-lg">বার্ষিক কার্যক্রম রিপোর্ট ২০২৩</h4>
+                        <p class="text-sm text-gray-500">সম্পূর্ণ প্রজেক্টের বিবরণ</p>
+                    </div>
+                    <button class="text-brand-primary hover:bg-blue-50 p-2 rounded-full transition">
+                        <i class="fas fa-file-pdf text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Donate Section -->
+    <section id="donate" class="py-20 bg-brand-primary text-white relative overflow-hidden">
+        <!-- Decoration -->
+        <div class="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-white opacity-10 rounded-full"></div>
+        <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-60 h-60 bg-white opacity-10 rounded-full"></div>
+
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold mb-4">পাশে দাঁড়ান, পরিবর্তন আনুন</h2>
+                <p class="text-blue-100 text-lg">আপনার দান সরাসরি সুবিধাবঞ্চিত মানুষের কাছে পৌঁছে দেওয়া হবে।</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <!-- Bkash -->
+                <div class="bg-white text-gray-800 rounded-xl p-6 text-center shadow-2xl transform hover:-translate-y-2 transition duration-300">
+                    <img src="https://logos-download.com/wp-content/uploads/2022/01/BKash_Logo_icon.png" alt="bKash" class="h-16 mx-auto mb-4">
+                    <h3 class="font-bold text-xl mb-2">বিকাশ (পার্সোনাল)</h3>
+                    <div class="bg-gray-100 p-3 rounded font-mono text-lg font-bold text-pink-600 mb-2 select-all cursor-pointer border border-dashed border-gray-400">
+                        017XX-XXXXXX
+                    </div>
+                    <p class="text-xs text-gray-500">*সেন্ড মানি অপশন ব্যবহার করুন</p>
+                </div>
+
+                <!-- Nagad -->
+                <div class="bg-white text-gray-800 rounded-xl p-6 text-center shadow-2xl transform hover:-translate-y-2 transition duration-300">
+                    <img src="https://download.logo.wine/logo/Nagad/Nagad-Vertical-Logo.wine.png" alt="Nagad" class="h-16 mx-auto mb-4">
+                    <h3 class="font-bold text-xl mb-2">নগদ (পার্সোনাল)</h3>
+                    <div class="bg-gray-100 p-3 rounded font-mono text-lg font-bold text-orange-600 mb-2 select-all cursor-pointer border border-dashed border-gray-400">
+                        018XX-XXXXXX
+                    </div>
+                    <p class="text-xs text-gray-500">*সেন্ড মানি অপশন ব্যবহার করুন</p>
+                </div>
+
+                <!-- Bank -->
+                <div class="bg-white text-gray-800 rounded-xl p-6 text-center shadow-2xl transform hover:-translate-y-2 transition duration-300">
+                    <div class="h-16 flex items-center justify-center mb-4 text-brand-primary">
+                        <i class="fas fa-university text-5xl"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-2">ব্যাংক একাউন্ট</h3>
+                    <div class="text-left bg-gray-50 p-4 rounded text-sm space-y-1">
+                        <p><strong>নাম:</strong> আগন্তুক ফাউন্ডেশন</p>
+                        <p><strong>হিসাব নং:</strong> 2050XXXXXX</p>
+                        <p><strong>ব্যাংক:</strong> ডাচ বাংলা ব্যাংক</p>
+                        <p><strong>শাখা:</strong> মিরপুর</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Volunteer Registration -->
+    <section id="volunteer" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="bg-gray-800 p-6 text-center text-white">
+                    <h2 class="text-2xl font-bold">স্বেচ্ছাসেবক হিসেবে যোগ দিন</h2>
+                    <p class="text-gray-300 text-sm">টিম আগন্তুক-এ আপনাকে স্বাগতম</p>
+                </div>
+                <div class="p-8">
+                    <form onsubmit="handleVolunteerSubmit(event)" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">আপনার নাম</label>
+                                <input type="text" required class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-primary">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">ফোন নম্বর</label>
+                                <input type="tel" required class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-primary">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">ইমেইল (ঐচ্ছিক)</label>
+                            <input type="email" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">আপনি কিভাবে সাহায্য করতে চান?</label>
+                            <select class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-primary">
+                                <option>মাঠকর্মী (Field Work)</option>
+                                <option>রক্তদান</option>
+                                <option>ফান্ডরাইজিং</option>
+                                <option>সোশ্যাল মিডিয়া মার্কেটিং</option>
+                                <option>গ্রাফিক্স ডিজাইন/আইটি</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="w-full bg-brand-primary text-white py-3 rounded font-bold hover:bg-brand-dark transition">রেজিস্ট্রেশন করুন</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-300 py-12">
+        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <div class="flex items-center gap-2 mb-4 text-white">
+                    <img src="Logopit_1567088486048.png" alt="Logo" class="h-10 w-auto bg-white rounded-full p-1">
+                    <span class="text-xl font-bold">আগন্তুক</span>
+                </div>
+                <p class="text-sm leading-relaxed mb-4">
+                    আগন্তুক একটি পরিবার, একটি অনুভূতির নাম। আমরা চাই এমন একটি সমাজ যেখানে কেউ না খেয়ে থাকবে না।
+                </p>
+                <div class="flex gap-4">
+                    <a href="#" class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center hover:bg-blue-600 transition"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center hover:bg-red-500 transition"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center hover:bg-pink-600 transition"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            
+            <div>
+                <h3 class="text-white font-bold mb-4 border-b border-gray-700 pb-2 inline-block">লিংকস</h3>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#about" class="hover:text-brand-primary transition">আমাদের সম্পর্কে</a></li>
+                    <li><a href="#projects" class="hover:text-brand-primary transition">প্রজেক্টসমূহ</a></li>
+                    <li><a href="#transparency" class="hover:text-brand-primary transition">ফিনান্সিয়াল রিপোর্ট</a></li>
+                    <li><a href="#privacy" class="hover:text-brand-primary transition">গোপনীয়তা নীতি</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="text-white font-bold mb-4 border-b border-gray-700 pb-2 inline-block">যোগাযোগ</h3>
+                <ul class="space-y-3 text-sm">
+                    <li class="flex items-start gap-3">
+                        <i class="fas fa-map-marker-alt mt-1 text-brand-primary"></i>
+                        <span>মিরপুর ১০, ঢাকা-১২১৬, বাংলাদেশ</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <i class="fas fa-phone-alt text-brand-primary"></i>
+                        <span>+880 17XX-XXXXXX</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <i class="fas fa-envelope text-brand-primary"></i>
+                        <span>info@agantuk.org</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="text-white font-bold mb-4 border-b border-gray-700 pb-2 inline-block">নিউজলেটার</h3>
+                <p class="text-sm mb-3">আমাদের কার্যক্রমের আপডেট পেতে ইমেইল দিন।</p>
+                <form class="flex">
+                    <input type="email" placeholder="Email Address" class="w-full px-3 py-2 rounded-l bg-gray-800 border-none focus:outline-none focus:ring-1 focus:ring-brand-primary text-sm">
+                    <button class="bg-brand-primary px-4 rounded-r hover:bg-brand-dark transition"><i class="fas fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+        <div class="border-t border-gray-800 mt-12 pt-6 text-center text-sm text-gray-500">
+            &copy; ২০২৪ আগন্তুক ফাউন্ডেশন। সর্বস্বত্ব সংরক্ষিত। | Developed with <i class="fas fa-heart text-red-500"></i> by Agantuk Tech Team
+        </div>
+    </footer>
+
+    <!-- JavaScript for Interactivity -->
+    <script>
+        // Mobile Menu Toggle
+        function toggleMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.querySelector('nav button i');
+            
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                menu.classList.add('hidden');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        }
+
+        // Navbar Shadow on Scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('shadow-lg');
+            } else {
+                nav.classList.remove('shadow-lg');
+            }
+        });
+
+        // Animated Counters
+        const counters = document.querySelectorAll('.counter');
+        const speed = 200;
+
+        const animateCounters = () => {
+            counters.forEach(counter => {
+                const updateCount = () => {
+                    const target = +counter.getAttribute('data-target');
+                    const count = +counter.innerText;
+                    const inc = target / speed;
+
+                    if (count < target) {
+                        counter.innerText = Math.ceil(count + inc);
+                        setTimeout(updateCount, 20);
+                    } else {
+                        counter.innerText = target + (target > 100 ? '+' : '');
+                    }
+                };
+                updateCount();
+            });
+        };
+
+        // Trigger animation when stats section is in view
+        let counted = false;
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !counted) {
+                    animateCounters();
+                    counted = true;
+                }
+            });
+        });
+
+        const statsSection = document.querySelector('.counter').parentElement.parentElement;
+        if(statsSection) observer.observe(statsSection);
+
+        // Volunteer Form Handling
+        function handleVolunteerSubmit(e) {
+            e.preventDefault();
+            // In a real app, send data to backend/Firebase here
+            alert("ধন্যবাদ! আপনার রেজিস্ট্রেশন সফল হয়েছে। আমরা শীঘ্রই আপনার সাথে যোগাযোগ করব।");
+            e.target.reset();
+        }
+    </script>
+</body>
+</html>

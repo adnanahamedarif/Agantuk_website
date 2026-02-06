@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>আগন্তুক | এডমিন প্যানেল</title>
+    
+    <!-- Google Fonts: Hind Siliguri for Bangla -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            primary: '#3B82F6',
+                            secondary: '#D32F2F',
+                            dark: '#1E40AF',
+                            light: '#EFF6FF',
+                            accent: '#F59E0B'
+                        },
+                        admin: {
+                            bg: '#1E293B',
+                            sidebar: '#0F172A',
+                            card: '#334155'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Hind Siliguri"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3B82F6; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #1E40AF; 
+        }
+
+        /* Sidebar Animation */
+        .sidebar-item {
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-item:hover {
+            transform: translateX(5px);
+        }
+
+        /* Card Hover Effects */
+        .admin-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .admin-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Loading Animation */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        /* Modal Animation */
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-animation {
+            animation: modalIn 0.3s ease-out;
+        }
+        
+        /* Custom styles */
+        .section-content {
+            display: none;
+        }
+        
+        .section-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-50">
+
+    <!-- Login Screen -->
+    <div id="loginScreen" class="fixed inset-0 bg-gradient-to-br from-brand-primary to-brand-dark flex items-center justify-center z-50">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md mx-4 modal-animation">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-brand-primary to-brand-dark rounded-full mb-4">
+                    <i class="fas fa-lock text-white text-3xl"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-gray-800">এডমিন লগইন</h2>
+                <p class="text-gray-600 mt-2">আগন্তুক এডমিন প্যানেলে স্বাগতম</p>
+            </div>
+
+            <form id="loginForm" class="space-y-6">
+                <div>
+                    <label class="block text-gray-700 mb-2 font-medium">ইমেইল এড্রেস</label>
+                    <input type="email" 
+                           id="adminEmail"
+                           required
+                           class="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition"
+                           placeholder="আপনার ইমেইল দিন">
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 mb-2 font-medium">পাসওয়ার্ড</label>
+                    <input type="password" 
+                           id="adminPassword"
+                           required
+                           class="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition"
+                           placeholder="পাসওয়ার্ড দিন">
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <label class="flex items-center">
+                        <input type="checkbox" class="rounded text-brand-primary focus:ring-brand-primary">
+                        <span class="ml-2 text-gray-600">মনে রাখুন</span>
+                    </label>
+                    <a href="#" class="text-brand-primary hover:text-brand-dark font-medium">পাসওয়ার্ড ভুলে গেছেন?</a>
+                </div>
+
+                <button type="submit" 
+                        id="loginBtn"
+                        class="w-full bg-gradient-to-r from-brand-primary to-brand-dark text-white py-4 rounded-xl font-bold text-lg hover:shadow-lg transform hover:-translate-y-0.5 transition duration-300">
+                    <span id="loginText">লগইন করুন</span>
+                    <span id="loginLoading" class="hidden">
+                        <i class="fas fa-spinner fa-spin mr-2"></i> লগইন হচ্ছে...
+                    </span>
+                </button>
+
+                <div class="text-center pt-4 border-t">
+                    <p class="text-gray-600">প্রধান ওয়েবসাইটে যান</p>
+                    <a href="index1.html" 
+                       class="inline-block mt-2 text-brand-primary hover:text-brand-dark font-medium">
+                        <i class="fas fa-external-link-alt mr-2"></i> আগন্তুক হোমপেজ
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Admin Panel (Hidden by default) -->
+    <div id="adminPanel" class="hidden">
+        <!-- Top Navigation -->
+        <nav class="fixed top-0 left-0 right-0 bg-white shadow-lg z-40 h-16 flex items-center justify-between px-6">
+            <div class="flex items-center gap-4">
+                <button onclick="toggleSidebar()" class="lg:hidden text-gray-600 hover:text-brand-primary text-xl">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="flex items-center gap-3">
+                    <img src="Logopit_1567088486048.png" alt="Logo" class="h-10 w-auto">
+                    <div>
+                        <h1 class="font-bold text-gray-800 text-lg">আগন্তুক এডমিন</h1>
+                        <p class="text-xs text-gray-500">কন্ট্রোল প্যানেল</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-6">
+                <!-- Admin Profile -->
+                <div class="relative">
+                    <button onclick="toggleProfileMenu()" class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-gradient-to-r from-brand-primary to-brand-dark rounded-full flex items-center justify-center text-white font-bold">
+                            A
+                        </div>
+                        <div class="text-left hidden md:block">
+                            <p class="font-medium text-gray-800">এডমিন</p>
+                            <p class="text-xs text-gray-500">Super Admin</p>
+                        </div>
+                        <i class="fas fa-chevron-down text-gray-500"></i>
+                    </button>
+                    
+                    <!-- Profile Dropdown -->
+                    <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-2xl border border-gray-200 z-50">
+                        <div class="p-4 border-b">
+                            <p class="font-bold text-gray-800">agantukbd2019@gmail.com</p>
+                            <p class="text-sm text-gray-500">এডমিন অ্যাকাউন্ট</p>
+                        </div>
+                        <div class="p-2">
+                            <div class="border-t mt-2 pt-2">
+                                <button onclick="logout()" class="w-full flex items-center gap-3 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>লগআউট</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Sidebar -->
+        <aside id="sidebar" class="fixed left-0 top-16 bottom-0 w-64 bg-admin-sidebar text-white z-30 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 overflow-y-auto">
+            <div class="p-6">
+                <div class="mb-8">
+                    <h3 class="text-xs uppercase tracking-wider text-gray-400 mb-4">মেইন মেনু</h3>
+                    <nav class="space-y-2">
+                        <a href="#dashboard" onclick="showSection('dashboard')" class="sidebar-item flex items-center gap-3 px-4 py-3 bg-brand-primary rounded-lg text-white">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>ড্যাশবোর্ড</span>
+                        </a>
+                        <a href="#stats" onclick="showSection('stats')" class="sidebar-item flex items-center gap-3 px-4 py-3 hover:bg-admin-card rounded-lg">
+                            <i class="fas fa-chart-line"></i>
+                            <span>স্ট্যাটিস্টিকস</span>
+                        </a>
+                        <a href="#about" onclick="showSection('about')" class="sidebar-item flex items-center gap-3 px-4 py-3 hover:bg-admin-card rounded-lg">
+                            <i class="fas fa-info-circle"></i>
+                            <span>আমাদের সম্পর্কে</span>
+                        </a>
+                        <a href="#projects" onclick="showSection('projects')" class="sidebar-item flex items-center gap-3 px-4 py-3 hover:bg-admin-card rounded-lg">
+                            <i class="fas fa-project-diagram"></i>
+                            <span>প্রজেক্টসমূহ</span>
+                        </a>
+                        <a href="#transparency" onclick="showSection('transparency')" class="sidebar-item flex items-center gap-3 px-4 py-3 hover:bg-admin-card rounded-lg">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                            <span>স্বচ্ছতা রিপোর্ট</span>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="lg:ml-64 pt-16 min-h-screen">
+            <!-- Overlay for mobile sidebar -->
+            <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden hidden" onclick="toggleSidebar()"></div>
+
+            <!-- Content Sections -->
+            <div id="contentSections">
+                <!-- Dashboard Section -->
+                <section id="dashboard" class="section-content p-6 active">
+                    <div class="mb-8">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-2">ড্যাশবোর্ড ওভারভিউ</h2>
+                        <p class="text-gray-600">আগন্তুকের সামগ্রিক পারফরম্যান্স এবং কার্যক্রম</p>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="admin-card bg-white rounded-xl shadow-lg p-6 border-l-4 border-brand-primary">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-sm text-gray-500">উপকৃত মানুষ</p>
+                                    <h3 class="text-3xl font-bold text-gray-800 mt-2" id="statPeople">5000+</h3>
+                                </div>
+                                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-users text-brand-primary text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="admin-card bg-white rounded-xl shadow-lg p-6 border-l-4 border-brand-secondary">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-sm text-gray-500">রক্তদান সম্পন্ন</p>
+                                    <h3 class="text-3xl font-bold text-gray-800 mt-2" id="statBlood">1200+</h3>
+                                </div>
+                                <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-tint text-brand-secondary text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="admin-card bg-white rounded-xl shadow-lg p-6 border-l-4 border-brand-accent">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-sm text-gray-500">সক্রিয় স্বেচ্ছাসেবক</p>
+                                    <h3 class="text-3xl font-bold text-gray-800 mt-2" id="statVolunteers">350+</h3>
+                                </div>
+                                <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-hands-helping text-brand-accent text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="admin-card bg-white rounded-xl shadow-lg p-6 border-l-4 border-green-500">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-sm text-gray-500">চলমান প্রজেক্ট</p>
+                                    <h3 class="text-3xl font-bold text-gray-800 mt-2" id="statProjects">50+</h3>
+                                </div>
+                                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-tasks text-green-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                        <div class="admin-card bg-white rounded-xl shadow-lg p-6">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">দ্রুত অ্যাকশন</h3>
+                            <div class="grid grid-cols-2 gap-4">
+                                <button onclick="showSection('stats')" class="flex flex-col items-center justify-center p-4 bg-blue-50 hover:bg-blue-100 rounded-xl transition">
+                                    <i class="fas fa-chart-bar text-2xl text-brand-primary mb-2"></i>
+                                    <span class="font-medium">স্ট্যাটস আপডেট</span>
+                                </button>
+                                <button onclick="showSection('projects')" class="flex flex-col items-center justify-center p-4 bg-green-50 hover:bg-green-100 rounded-xl transition">
+                                    <i class="fas fa-project-diagram text-2xl text-green-600 mb-2"></i>
+                                    <span class="font-medium">প্রজেক্ট যোগ করুন</span>
+                                </button>
+                                <button onclick="showSection('transparency')" class="flex flex-col items-center justify-center p-4 bg-purple-50 hover:bg-purple-100 rounded-xl transition">
+                                    <i class="fas fa-file-pdf text-2xl text-purple-600 mb-2"></i>
+                                    <span class="font-medium">রিপোর্ট আপলোড</span>
+                                </button>
+                                <button onclick="showSection('about')" class="flex flex-col items-center justify-center p-4 bg-orange-50 hover:bg-orange-100 rounded-xl transition">
+                                    <i class="fas fa-info-circle text-2xl text-orange-600 mb-2"></i>
+                                    <span class="font-medium">আমাদের সম্পর্কে</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Statistics Section -->
+                <section id="stats" class="section-content p-6 hidden">
+                    <div class="mb-8">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-2">লাইভ কাউন্টার ম্যানেজমেন্ট</h2>
+                        <p class="text-gray-600">ওয়েবসাইটের হোমপেজের লাইভ কাউন্টার আপডেট করুন</p>
+                    </div>
+
+                    <div class="admin-card bg-white rounded-xl shadow-lg p-6 mb-8">
+                        <h3 class="text-lg font-bold text-gray-800 mb-6">কাউন্টার ভ্যালুসমূহ</h3>
+                        
+                        <form id="statsForm" class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- উপকৃত মানুষ -->
+                                <div>
+                                    <label class="block text-gray-700 mb-2 font-medium">
+                                        <i class="fas fa-users text-brand-primary mr-2"></i>
+                                        উপকৃত মানুষ
+                                    </label>
+                                    <input type="number" 
+                                           id="statPeopleInput"
+                                           min="0"
+                                           class="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition"
+                                           placeholder="উপকৃত মানুষের সংখ্যা">
+                                    <p class="text-sm text-gray-500 mt-2">ওয়েবসাইটে দেখানো হবে: <span id="statPeoplePreview" class="font-bold">5000+</span></p>
+                                </div>
+
+                                <!-- রক্তদান সম্পন্ন -->
+                                <div>
+                                    <label class="block text-gray-700 mb-2 font-medium">
+                                        <i class="fas fa-tint text-brand-secondary mr-2"></i>
+                                        রক্তদান সম্পন্ন
+                                    </label>
+                                    <input type="number" 
+                                           id="statBloodInput"
+                                           min="0"
+                                           class="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition"
+                                           placeholder="রক্তদানের সংখ্যা">
+                                    <p class="text-sm text-gray-500 mt-2">ওয়েবসাইটে দেখানো হবে: <span id="statBloodPreview" class="font-bold">1200+</span></p>
+                                </div>
+
+                                <!-- চলমান প্রজেক্ট -->
+                                <div>
+                                    <label class="block text-gray-700 mb-2 font-medium">
+                                        <i class="fas fa-tasks text-green-600 mr-2"></i>
+                                        চলমান প্রজেক্ট
+                                    </label>
+                                    <input type="number" 
+                                           id="statProjectsInput"
+                                           min="0"
+                                           class="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition"
+                                           placeholder="প্রজেক্ট সংখ্যা">
+                                    <p class="text-sm text-gray-500 mt-2">ওয়েবসাইটে দেখানো হবে: <span id="statProjectsPreview" class="font-bold">50+</span></p>
+                                </div>
+
+                                <!-- স্বেচ্ছাসেবক -->
+                                <div>
+                                    <label class="block text-gray-700 mb-2 font-medium">
+                                        <i class="fas fa-hands-helping text-brand-accent mr-2"></i>
+                                        স্বেচ্ছাসেবক
+                                    </label>
+                                    <input type="number" 
+                                           id="statVolunteersInput"
+                                           min="0"
+                                           class="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition"
+                                           placeholder="স্বেচ্ছাসেবক সংখ্যা">
+                                    <p class="text-sm text-gray-500 mt-2">ওয়েবসাইটে দেখানো হবে: <span id="statVolunteersPreview" class="font-bold">350+</span></p>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-4 pt-4">
+                                <button type="button" 
+                                        onclick="updateStats()"
+                                        class="bg-gradient-to-r from-brand-primary to-brand-dark text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg transition flex items-center gap-2">
+                                    <i class="fas fa-save"></i> আপডেট সেভ করুন
+                                </button>
+                                <button type="button" 
+                                        onclick="resetStatsForm()"
+                                        class="border border-gray-300 text-gray-700 px-8 py-3 rounded-xl font-bold hover:bg-gray-50 transition">
+                                    রিসেট করুন
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- About Section Editor -->
+                <section id="about" class="section-content p-6 hidden">
+                    <div class="mb-8">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-2">"আমাদের সম্পর্কে" সেকশন এডিটর</h2>
+                        <p class="text-gray-600">ওয়েবসাইটের "আমাদের সম্পর্কে" সেকশনের কন্টেন্ট আপডেট করুন</p>
+                    </div>
+
+                    <div class="admin-card bg-white rounded-xl shadow-lg p-6 mb-8">
+                        <h3 class="text-lg font-bold text-gray-800 mb-6">বেসিক তথ্য</h3>
+                        
+                        <form id="aboutForm" class="space-y-6">
+                            <!-- শিরোনাম -->
+                            <div>
+                                <label class="block text-gray-700 mb-2 font-medium">
+                                    শিরোনাম
+                                </label>
+                                <input type="text" 
+                                       id="aboutTitle"
+                                       class="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition"
+                                       placeholder="শিরোনাম লিখুন"
+                                       value="আগন্তুক: মানবতার এক নতুন পথচলা">
+                            </div>
+
+                            <!-- মূল কন্টেন্ট -->
+                            <div>
+                                <label class="block text-gray-700 mb-2 font-medium">
+                                    মূল বর্ণনা
+                                </label>
+                                <textarea id="aboutContent" 
+                                          rows="6"
+                                          class="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition"
+                                          placeholder="বিস্তারিত বর্ণনা লিখুন">আগন্তুক একটি অরাজনৈতিক, অলাভজনক এবং স্বেচ্ছাসেবী সংগঠন। আমরা বিশ্বাস করি, সমাজের বিত্তবান ও সুবিধাবঞ্চিত মানুষের মধ্যে সেতুবন্ধন তৈরি করলেই একটি সুন্দর পৃথিবী গড়া সম্ভব।</textarea>
+                            </div>
+
+                            <!-- লক্ষ্য (Vision) -->
+                            <div>
+                                <label class="block text-gray-700 mb-2 font-medium">
+                                    আমাদের লক্ষ্য (Vision)
+                                </label>
+                                <input type="text" 
+                                       id="aboutVision"
+                                       class="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition"
+                                       placeholder="আমাদের লক্ষ্য লিখুন"
+                                       value="ক্ষুধা ও দারিদ্র্যমুক্ত একটি স্বনির্ভর বাংলাদেশ গড়া।">
+                            </div>
+
+                            <!-- উদ্দেশ্য (Mission) -->
+                            <div>
+                                <label class="block text-gray-700 mb-2 font-medium">
+                                    আমাদের উদ্দেশ্য (Mission)
+                                </label>
+                                <input type="text" 
+                                       id="aboutMission"
+                                       class="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition"
+                                       placeholder="আমাদের উদ্দেশ্য লিখুন"
+                                       value="শিক্ষা, স্বাস্থ্য এবং মৌলিক অধিকার নিশ্চিত করতে সম্মিলিত প্রচেষ্টা।">
+                            </div>
+
+                            <div class="flex gap-4 pt-6">
+                                <button type="button" 
+                                        onclick="updateAboutSection()"
+                                        class="bg-gradient-to-r from-brand-primary to-brand-dark text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg transition flex items-center gap-2">
+                                    <i class="fas fa-save"></i> সেকশন আপডেট করুন
+                                </button>
+                                <button type="button" 
+                                        onclick="previewAboutSection()"
+                                        class="border border-brand-primary text-brand-primary px-8 py-3 rounded-xl font-bold hover:bg-blue-50 transition">
+                                    প্রিভিউ দেখুন
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- About Section Preview -->
+                    <div id="aboutPreview" class="admin-card bg-white rounded-xl shadow-lg p-6 hidden">
+                        <h3 class="text-lg font-bold text-gray-800 mb-6">লাইভ প্রিভিউ</h3>
+                        <div class="border-2 border-gray-200 rounded-xl p-6">
+                            <!-- Preview will be loaded here -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Projects Section Editor -->
+                <section id="projects" class="section-content p-6 hidden">
+                    <div class="mb-8">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-2">প্রজেক্ট ম্যানেজমেন্ট</h2>
+                        <p class="text-gray-600">ওয়েবসাইটের "আমাদের চলমান প্রজেক্টসমূহ" সেকশন ম্যানেজ করুন</p>
+                    </div>
+
+                    <!-- Add New Project -->
+                    <div class="admin-card bg-white rounded-xl shadow-lg p-6 mb-8">
+                        <h3 class="text-lg font-bold text-gray-800 mb-6">নতুন প্রজেক্ট যোগ করুন</h3>
+                        
+                        <form id="projectForm" class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- প্রজেক্ট নাম -->
+                                <div>
+                                    <label class="block text-gray-700 mb-2 font-medium">প্রজেক্ট নাম</label>
+                                    <input type="text" 
+                                           id="projectName"
+                                           class="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition"
+                                           placeholder="প্রজেক্টের নাম লিখুন">
+                                </div>
+
+                                <!-- প্রজেক্ট ক্যাটাগরি -->
+                                <div>
+                                    <label class="block text-gray-700 mb-2 font-medium">ক্যাটাগরি</label>
+                                    <select id="projectCategory"
+                                            class="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition">
+                                        <option value="">সিলেক্ট করুন</option>
+                                        <option value="স্বাস্থ্য">স্বাস্থ্য</option>
+                                        <option value="শিক্ষা">শিক্ষা</option>
+                                        <option value="কর্মসংস্থান">কর্মসংস্থান</option>
+                                        <option value="খাদ্য সহায়তা">খাদ্য সহায়তা</option>
+                                        <option value="রক্তদান">রক্তদান</option>
+                                        <option value="অন্যান্য">অন্যান্য</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- প্রজেক্ট বর্ণনা -->
+                            <div>
+                                <label class="block text-gray-700 mb-2 font-medium">বর্ণনা</label>
+                                <textarea id="projectDescription" 
+                                          rows="4"
+                                          class="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition"
+                                          placeholder="প্রজেক্টের বিস্তারিত বর্ণনা লিখুন"></textarea>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <!-- অবস্থা -->
+                                <div>
+                                    <label class="block text-gray-700 mb-2 font-medium">অবস্থা</label>
+                                    <select id="projectStatus"
+                                            class="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition">
+                                        <option value="চলমান">চলমান</option>
+                                        <option value="পরিকল্পনাধীন">পরিকল্পনাধীন</option>
+                                        <option value="সম্পন্ন">সম্পন্ন</option>
+                                        <option value="বন্ধ">বন্ধ</option>
+                                    </select>
+                                </div>
+
+                                <!-- সংগৃহীত অর্থ -->
+                                <div>
+                                    <label class="block text-gray-700 mb-2 font-medium">সংগৃহীত অর্থ (টাকায়)</label>
+                                    <input type="number" 
+                                           id="projectCollected"
+                                           min="0"
+                                           class="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition"
+                                           placeholder="সংগৃহীত অর্থ">
+                                </div>
+
+                                <!-- লক্ষ্যমাত্রা -->
+                                <div>
+                                    <label class="block text-gray-700 mb-2 font-medium">লক্ষ্যমাত্রা (টাকায়)</label>
+                                    <input type="number" 
+                                           id="projectTarget"
+                                           min="0"
+                                           class="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition"
+                                           placeholder="লক্ষ্যমাত্রা">
+                                </div>
+                            </div>
+
+                            <div class="flex gap-4 pt-6">
+                                <button type="button" 
+                                        onclick="addProject()"
+                                        class="bg-gradient-to-r from-green-500 to-green-600 text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg transition flex items-center gap-2">
+                                    <i class="fas fa-plus"></i> প্রজেক্ট যোগ করুন
+                                </button>
+                                <button type="reset" 
+                                        class="border border-gray-300 text-gray-700 px-8 py-3 rounded-xl font-bold hover:bg-gray-50 transition">
+                                    ফর্ম রিসেট করুন
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Existing Projects -->
+                    <div class="admin-card bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-bold text-gray-800">বিদ্যমান প্রজেক্টসমূহ</h3>
+                        </div>
+
+                        <div id="projectsList" class="space-y-4">
+                            <!-- Projects will be loaded here dynamically -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Transparency Reports Section -->
+                <section id="transparency" class="section-content p-6 hidden">
+                    <div class="mb-8">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-2">স্বচ্ছতা রিপোর্ট ম্যানেজমেন্ট</h2>
+                        <p class="text-gray-600">ওয়েবসাইটের "স্বচ্ছতা ও জবাবদিহিতা" সেকশনের রিপোর্ট আপলোড করুন</p>
+                    </div>
+
+                    <!-- Upload New Report -->
+                    <div class="admin-card bg-white rounded-xl shadow-lg p-6 mb-8">
+                        <h3 class="text-lg font-bold text-gray-800 mb-6">নতুন রিপোর্ট আপলোড করুন</h3>
+                        
+                        <form id="reportForm" class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- রিপোর্ট টাইপ -->
+                                <div>
+                                    <label class="block text-gray-700 mb-2 font-medium">রিপোর্ট টাইপ</label>
+                                    <select id="reportType"
+                                            class="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition">
+                                        <option value="">সিলেক্ট করুন</option>
+                                        <option value="আয়-ব্যয়">আয়-ব্যয় রিপোর্ট</option>
+                                        <option value="কার্যক্রম">কার্যক্রম রিপোর্ট</option>
+                                        <option value="বার্ষিক">বার্ষিক রিপোর্ট</option>
+                                        <option value="অডিট">অডিট রিপোর্ট</option>
+                                        <option value="অন্যান্য">অন্যান্য</option>
+                                    </select>
+                                </div>
+
+                                <!-- রিপোর্টের সময়কাল -->
+                                <div>
+                                    <label class="block text-gray-700 mb-2 font-medium">সময়কাল</label>
+                                    <input type="text" 
+                                           id="reportPeriod"
+                                           class="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition"
+                                           placeholder="যেমন: জানুয়ারি ২০২৪">
+                                </div>
+                            </div>
+
+                            <!-- রিপোর্ট শিরোনাম -->
+                            <div>
+                                <label class="block text-gray-700 mb-2 font-medium">শিরোনাম</label>
+                                <input type="text" 
+                                       id="reportTitle"
+                                       class="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition"
+                                       placeholder="রিপোর্টের শিরোনাম লিখুন">
+                            </div>
+
+                            <!-- বিবরণ -->
+                            <div>
+                                <label class="block text-gray-700 mb-2 font-medium">সংক্ষিপ্ত বিবরণ</label>
+                                <textarea id="reportDescription" 
+                                          rows="3"
+                                          class="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition"
+                                          placeholder="রিপোর্টের সংক্ষিপ্ত বিবরণ"></textarea>
+                            </div>
+
+                            <!-- ফাইল লিংক -->
+                            <div>
+                                <label class="block text-gray-700 mb-2 font-medium">ফাইল লিংক (Google Drive/PDF URL)</label>
+                                <input type="url" 
+                                       id="reportFileLink"
+                                       class="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition"
+                                       placeholder="https://drive.google.com/...">
+                                <p class="text-sm text-gray-500 mt-2">PDF ফাইলের লিংক দিন (Google Drive, Dropbox, ইত্যাদি)</p>
+                            </div>
+
+                            <div class="flex gap-4 pt-6">
+                                <button type="button" 
+                                        onclick="uploadReport()"
+                                        class="bg-gradient-to-r from-brand-primary to-brand-dark text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg transition flex items-center gap-2">
+                                    <i class="fas fa-upload"></i> রিপোর্ট আপডেট করুন
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Existing Reports -->
+                    <div class="admin-card bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-bold text-gray-800">বিদ্যমান রিপোর্টসমূহ</h3>
+                            <div class="text-sm text-gray-600">
+                                মোট রিপোর্ট: <span id="totalReports" class="font-bold">0</span> টি
+                            </div>
+                        </div>
+
+                        <div id="reportsList" class="space-y-4">
+                            <!-- Reports will be loaded here -->
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-6 right-6 z-50 hidden">
+        <div class="bg-white rounded-xl shadow-2xl p-4 min-w-80 max-w-md transform translate-x-full transition-transform duration-300">
+            <div class="flex items-start gap-3">
+                <div id="toastIcon" class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-info-circle text-white"></i>
+                </div>
+                <div class="flex-1">
+                    <h4 id="toastTitle" class="font-bold text-gray-800"></h4>
+                    <p id="toastMessage" class="text-sm text-gray-600 mt-1"></p>
+                </div>
+                <button onclick="hideToast()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Admin Credentials
+        const ADMIN_EMAIL = "agantukbd2019@gmail.com";
+        const ADMIN_PASSWORD = "agantuk2019";
+
+        // Current User
+        let currentUser = null;
+        let isLoggedIn = false;
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLogin();
+            setupEventListeners();
+            loadDashboardData();
+        });
+
+        // Check if user is already logged in
+        function checkLogin() {
+            const savedUser = localStorage.getItem('agantuk_admin');
+            if (savedUser) {
+                const userData = JSON.parse(savedUser);
+                if (userData.email === ADMIN_EMAIL && userData.expiry > Date.now()) {
+                    loginSuccess();
+                }
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Login form
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                handleLogin();
+            });
+
+            // Input validation for stats
+            document.querySelectorAll('#statsForm input').forEach(input => {
+                input.addEventListener('input', updateStatsPreview);
+            });
+        }
+
+        // Handle login
+        function handleLogin() {
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+            const loginBtn = document.getElementById('loginBtn');
+            const loginText = document.getElementById('loginText');
+            const loginLoading = document.getElementById('loginLoading');
+
+            // Show loading
+            loginText.classList.add('hidden');
+            loginLoading.classList.remove('hidden');
+            loginBtn.disabled = true;
+
+            // Simulate API call delay
+            setTimeout(() => {
+                if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+                    loginSuccess();
+                } else {
+                    showToast('লগইন ব্যর্থ', 'ইমেইল বা পাসওয়ার্ড ভুল!', 'error');
+                }
+
+                // Reset button
+                loginText.classList.remove('hidden');
+                loginLoading.classList.add('hidden');
+                loginBtn.disabled = false;
+            }, 1500);
+        }
+
+        // Login success handler
+        function loginSuccess() {
+            // Save login state
+            const userData = {
+                email: ADMIN_EMAIL,
+                timestamp: Date.now(),
+                expiry: Date.now() + (24 * 60 * 60 * 1000) // 24 hours
+            };
+            localStorage.setItem('agantuk_admin', JSON.stringify(userData));
+
+            // Switch to admin panel
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('adminPanel').classList.remove('hidden');
+            
+            isLoggedIn = true;
+            currentUser = ADMIN_EMAIL;
+            
+            showToast('লগইন সফল', 'এডমিন প্যানেলে স্বাগতম!', 'success');
+            loadDashboardData();
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('agantuk_admin');
+            isLoggedIn = false;
+            currentUser = null;
+            
+            document.getElementById('adminPanel').classList.add('hidden');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            
+            // Reset login form
+            document.getElementById('loginForm').reset();
+            
+            showToast('লগআউট সফল', 'সফলভাবে লগআউট করা হয়েছে', 'info');
+        }
+
+        // Toggle sidebar on mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+
+        // Show section
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section-content').forEach(section => {
+                section.classList.remove('active');
+                section.classList.add('hidden');
+            });
+            
+            // Show selected section
+            const selectedSection = document.getElementById(sectionId);
+            selectedSection.classList.remove('hidden');
+            selectedSection.classList.add('active');
+            
+            // Update active menu item
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('bg-brand-primary', 'text-white');
+                item.classList.add('hover:bg-admin-card');
+            });
+            
+            // Set active item
+            const activeItem = document.querySelector(`[onclick="showSection('${sectionId}')"]`);
+            if (activeItem) {
+                activeItem.classList.add('bg-brand-primary', 'text-white');
+                activeItem.classList.remove('hover:bg-admin-card');
+            }
+            
+            // Close sidebar on mobile
+            if (window.innerWidth < 1024) {
+                toggleSidebar();
+            }
+            
+            // Load section data
+            loadSectionData(sectionId);
+        }
+
+        // Toggle profile menu
+        function toggleProfileMenu() {
+            const dropdown = document.getElementById('profileDropdown');
+            dropdown.classList.toggle('hidden');
+        }
+
+        // Load dashboard data
+        function loadDashboardData() {
+            // Load stats from localStorage or use defaults
+            const stats = JSON.parse(localStorage.getItem('agantuk_stats') || '{}');
+            
+            // Update stats cards
+            document.getElementById('statPeople').textContent = (stats.people || 5000) + '+';
+            document.getElementById('statBlood').textContent = (stats.blood || 1200) + '+';
+            document.getElementById('statProjects').textContent = (stats.projects || 50) + '+';
+            document.getElementById('statVolunteers').textContent = (stats.volunteers || 350) + '+';
+        }
+
+        // Load section-specific data
+        function loadSectionData(sectionId) {
+            switch(sectionId) {
+                case 'stats':
+                    loadStatsData();
+                    break;
+                case 'projects':
+                    loadProjectsData();
+                    break;
+                case 'transparency':
+                    loadReportsData();
+                    break;
+            }
+        }
+
+        // Load stats data
+        function loadStatsData() {
+            const stats = JSON.parse(localStorage.getItem('agantuk_stats') || '{}');
+            
+            // Set form values
+            document.getElementById('statPeopleInput').value = stats.people || 5000;
+            document.getElementById('statBloodInput').value = stats.blood || 1200;
+            document.getElementById('statProjectsInput').value = stats.projects || 50;
+            document.getElementById('statVolunteersInput').value = stats.volunteers || 350;
+            
+            // Update preview
+            updateStatsPreview();
+        }
+
+        // Update stats preview
+        function updateStatsPreview() {
+            document.getElementById('statPeoplePreview').textContent = 
+                (document.getElementById('statPeopleInput').value || 0) + '+';
+            document.getElementById('statBloodPreview').textContent = 
+                (document.getElementById('statBloodInput').value || 0) + '+';
+            document.getElementById('statProjectsPreview').textContent = 
+                (document.getElementById('statProjectsInput').value || 0) + '+';
+            document.getElementById('statVolunteersPreview').textContent = 
+                (document.getElementById('statVolunteersInput').value || 0) + '+';
+        }
+
+        // Update stats
+        function updateStats() {
+            const newStats = {
+                people: parseInt(document.getElementById('statPeopleInput').value) || 0,
+                blood: parseInt(document.getElementById('statBloodInput').value) || 0,
+                projects: parseInt(document.getElementById('statProjectsInput').value) || 0,
+                volunteers: parseInt(document.getElementById('statVolunteersInput').value) || 0,
+                updatedAt: new Date().toISOString(),
+                updatedBy: currentUser
+            };
+            
+            // Save to localStorage
+            localStorage.setItem('agantuk_stats', JSON.stringify(newStats));
+            
+            // Update dashboard
+            loadDashboardData();
+            
+            showToast('স্ট্যাটস আপডেট', 'লাইভ কাউন্টার সফলভাবে আপডেট করা হয়েছে', 'success');
+            
+            // Also update main website data
+            updateMainWebsiteStats(newStats);
+        }
+
+        // Update main website stats
+        function updateMainWebsiteStats(stats) {
+            // This would normally be done via API or database
+            // For now, we'll just log it
+            console.log('Main website stats should be updated:', stats);
+            
+            // You can store this in localStorage that the main site can read
+            localStorage.setItem('main_site_stats', JSON.stringify(stats));
+        }
+
+        // Reset stats form
+        function resetStatsForm() {
+            document.getElementById('statsForm').reset();
+            updateStatsPreview();
+        }
+
+        // Update about section
+        function updateAboutSection() {
+            const aboutData = {
+                title: document.getElementById('aboutTitle').value,
+                content: document.getElementById('aboutContent').value,
+                vision: document.getElementById('aboutVision').value,
+                mission: document.getElementById('aboutMission').value,
+                updatedAt: new Date().toISOString(),
+                updatedBy: currentUser
+            };
+            
+            // Save to localStorage
+            localStorage.setItem('agantuk_about', JSON.stringify(aboutData));
+            
+            showToast('আপডেট সফল', '"আমাদের সম্পর্কে" সেকশন আপডেট করা হয়েছে', 'success');
+        }
+
+        // Preview about section
+        function previewAboutSection() {
+            const aboutData = {
+                title: document.getElementById('aboutTitle').value,
+                content: document.getElementById('aboutContent').value,
+                vision: document.getElementById('aboutVision').value,
+                mission: document.getElementById('aboutMission').value
+            };
+            
+            const previewDiv = document.querySelector('#aboutPreview .border-2');
+            previewDiv.innerHTML = `
+                <div class="flex flex-col md:flex-row items-center gap-8">
+                    <div class="w-full md:w-1/3">
+                        <div class="bg-gray-200 rounded-lg h-48 flex items-center justify-center">
+                            <i class="fas fa-image text-gray-400 text-4xl"></i>
+                        </div>
+                    </div>
+                    <div class="w-full md:w-2/3">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">${aboutData.title}</h3>
+                        <p class="text-gray-600 mb-6">${aboutData.content}</p>
+                        <div class="space-y-4">
+                            <div class="flex items-start gap-4">
+                                <div class="bg-blue-100 p-3 rounded-full text-brand-primary">
+                                    <i class="fas fa-eye text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-lg">আমাদের লক্ষ্য (Vision)</h4>
+                                    <p class="text-sm text-gray-600">${aboutData.vision}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div class="bg-blue-100 p-3 rounded-full text-brand-primary">
+                                    <i class="fas fa-bullseye text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-lg">আমাদের উদ্দেশ্য (Mission)</h4>
+                                    <p class="text-sm text-gray-600">${aboutData.mission}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('aboutPreview').classList.remove('hidden');
+        }
+
+        // Add new project
+        function addProject() {
+            const project = {
+                id: Date.now(),
+                name: document.getElementById('projectName').value,
+                category: document.getElementById('projectCategory').value,
+                description: document.getElementById('projectDescription').value,
+                status: document.getElementById('projectStatus').value,
+                collected: parseInt(document.getElementById('projectCollected').value) || 0,
+                target: parseInt(document.getElementById('projectTarget').value) || 0,
+                createdAt: new Date().toISOString(),
+                createdBy: currentUser
+            };
+            
+            // Validation
+            if (!project.name || !project.category) {
+                showToast('ত্রুটি', 'প্রয়োজনীয় তথ্য পূরণ করুন', 'error');
+                return;
+            }
+            
+            // Save project
+            const projects = JSON.parse(localStorage.getItem('agantuk_projects') || '[]');
+            projects.unshift(project);
+            localStorage.setItem('agantuk_projects', JSON.stringify(projects));
+            
+            // Reset form
+            document.getElementById('projectForm').reset();
+            
+            // Reload projects list
+            loadProjectsData();
+            
+            showToast('প্রজেক্ট যোগ করা হয়েছে', `${project.name} সফলভাবে যোগ করা হয়েছে`, 'success');
+        }
+
+        // Load projects data
+        function loadProjectsData() {
+            const projects = JSON.parse(localStorage.getItem('agantuk_projects') || '[]');
+            const container = document.getElementById('projectsList');
+            
+            if (projects.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <i class="fas fa-project-diagram text-4xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500">কোনো প্রজেক্ট নেই</p>
+                        <p class="text-sm text-gray-400 mt-2">প্রথম প্রজেক্ট যোগ করুন</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = projects.map(project => `
+                <div class="border border-gray-200 rounded-xl p-4 hover:shadow-md transition">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <h4 class="font-bold text-lg text-gray-800">${project.name}</h4>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
+                                    ${project.category}
+                                </span>
+                                <span class="px-3 py-1 ${getStatusColor(project.status)} text-white rounded-full text-sm">
+                                    ${project.status}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="editProject(${project.id})" class="text-brand-primary hover:text-brand-dark">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteProject(${project.id})" class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">${project.description}</p>
+                    <div class="flex justify-between items-center">
+                        <div class="text-sm text-gray-500">
+                            লক্ষ্যমাত্রা: ${project.target.toLocaleString()} টাকা
+                        </div>
+                        <div class="font-bold text-brand-primary">
+                            ${Math.round((project.collected / project.target) * 100) || 0}% পূরণ হয়েছে
+                        </div>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                        <div class="bg-brand-primary h-2 rounded-full" 
+                             style="width: ${Math.min((project.collected / project.target) * 100, 100) || 0}%"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Get status color
+        function getStatusColor(status) {
+            switch(status) {
+                case 'চলমান': return 'bg-green-500';
+                case 'পরিকল্পনাধীন': return 'bg-yellow-500';
+                case 'সম্পন্ন': return 'bg-blue-500';
+                case 'বন্ধ': return 'bg-gray-500';
+                default: return 'bg-gray-500';
+            }
+        }
+
+        // Upload report
+        function uploadReport() {
+            const report = {
+                id: Date.now(),
+                type: document.getElementById('reportType').value,
+                period: document.getElementById('reportPeriod').value,
+                title: document.getElementById('reportTitle').value,
+                description: document.getElementById('reportDescription').value,
+                fileLink: document.getElementById('reportFileLink').value,
+                uploadedAt: new Date().toISOString(),
+                uploadedBy: currentUser
+            };
+            
+            // Validation
+            if (!report.type || !report.period || !report.title) {
+                showToast('ত্রুটি', 'প্রয়োজনীয় তথ্য পূরণ করুন', 'error');
+                return;
+            }
+            
+            // Save report
+            const reports = JSON.parse(localStorage.getItem('agantuk_reports') || '[]');
+            reports.unshift(report);
+            localStorage.setItem('agantuk_reports', JSON.stringify(reports));
+            
+            // Reset form
+            document.getElementById('reportForm').reset();
+            
+            // Reload reports
+            loadReportsData();
+            
+            showToast('রিপোর্ট আপডেট', `${report.title} সফলভাবে আপডেট করা হয়েছে`, 'success');
+        }
+
+        // Load reports data
+        function loadReportsData() {
+            const reports = JSON.parse(localStorage.getItem('agantuk_reports') || '[]');
+            const container = document.getElementById('reportsList');
+            document.getElementById('totalReports').textContent = reports.length;
+            
+            if (reports.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <i class="fas fa-file-pdf text-4xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500">কোনো রিপোর্ট নেই</p>
+                        <p class="text-sm text-gray-400 mt-2">প্রথম রিপোর্ট যোগ করুন</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = reports.map(report => `
+                <div class="border border-gray-200 rounded-xl p-4 hover:shadow-md transition">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <h4 class="font-bold text-lg text-gray-800">${report.title}</h4>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
+                                    ${report.type}
+                                </span>
+                                <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">
+                                    ${report.period}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="deleteReport(${report.id})" class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">${report.description}</p>
+                    ${report.fileLink ? `
+                    <div class="flex items-center gap-2">
+                        <a href="${report.fileLink}" target="_blank" class="text-brand-primary hover:text-brand-dark font-medium">
+                            <i class="fas fa-external-link-alt mr-2"></i> রিপোর্ট দেখুন
+                        </a>
+                    </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Show toast notification
+        function showToast(title, message, type) {
+            const toast = document.getElementById('toast');
+            const toastTitle = document.getElementById('toastTitle');
+            const toastMessage = document.getElementById('toastMessage');
+            const toastIcon = document.getElementById('toastIcon');
+            
+            // Set content
+            toastTitle.textContent = title;
+            toastMessage.textContent = message;
+            
+            // Set type-based styling
+            let bgColor = 'bg-blue-500';
+            let icon = 'fas fa-info-circle';
+            
+            switch(type) {
+                case 'success':
+                    bgColor = 'bg-green-500';
+                    icon = 'fas fa-check-circle';
+                    break;
+                case 'error':
+                    bgColor = 'bg-red-500';
+                    icon = 'fas fa-exclamation-circle';
+                    break;
+                case 'warning':
+                    bgColor = 'bg-yellow-500';
+                    icon = 'fas fa-exclamation-triangle';
+                    break;
+            }
+            
+            toastIcon.className = `w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${bgColor}`;
+            toastIcon.innerHTML = `<i class="${icon} text-white"></i>`;
+            
+            // Show toast
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.querySelector('div').classList.remove('translate-x-full');
+            }, 10);
+            
+            // Auto hide after 5 seconds
+            setTimeout(hideToast, 5000);
+        }
+
+        // Hide toast
+        function hideToast() {
+            const toast = document.getElementById('toast');
+            toast.querySelector('div').classList.add('translate-x-full');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 300);
+        }
+
+        // Close all dropdowns when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('#profileDropdown') && !e.target.closest('[onclick="toggleProfileMenu()"]')) {
+                document.getElementById('profileDropdown').classList.add('hidden');
+            }
+        });
+
+        // Sample delete functions
+        function deleteProject(id) {
+            if (confirm('আপনি কি নিশ্চিত এই প্রজেক্টটি ডিলিট করতে চান?')) {
+                const projects = JSON.parse(localStorage.getItem('agantuk_projects') || '[]');
+                const updatedProjects = projects.filter(p => p.id !== id);
+                localStorage.setItem('agantuk_projects', JSON.stringify(updatedProjects));
+                loadProjectsData();
+                showToast('প্রজেক্ট ডিলিট', 'প্রজেক্ট সফলভাবে ডিলিট করা হয়েছে', 'success');
+            }
+        }
+
+        function deleteReport(id) {
+            if (confirm('আপনি কি নিশ্চিত এই রিপোর্টটি ডিলিট করতে চান?')) {
+                const reports = JSON.parse(localStorage.getItem('agantuk_reports') || '[]');
+                const updatedReports = reports.filter(r => r.id !== id);
+                localStorage.setItem('agantuk_reports', JSON.stringify(updatedReports));
+                loadReportsData();
+                showToast('রিপোর্ট ডিলিট', 'রিপোর্ট সফলভাবে ডিলিট করা হয়েছে', 'success');
+            }
+        }
+
+        function editProject(id) {
+            showToast('এডিট মোড', 'প্রজেক্ট এডিট করার জন্য প্রস্তুত', 'info');
+        }
+
+        // admin.html এর JavaScript অংশে নিচের ফাংশনগুলি যোগ/আপডেট করুন
+        
+        // Update stats function
+        function updateStats() {
+            const newStats = {
+                people: parseInt(document.getElementById('statPeopleInput').value) || 0,
+                blood: parseInt(document.getElementById('statBloodInput').value) || 0,
+                projects: parseInt(document.getElementById('statProjectsInput').value) || 0,
+                volunteers: parseInt(document.getElementById('statVolunteersInput').value) || 0,
+                updatedAt: new Date().toISOString(),
+                updatedBy: currentUser
+            };
+            
+            // Save to localStorage
+            localStorage.setItem('agantuk_stats', JSON.stringify(newStats));
+            
+            // Update dashboard
+            loadDashboardData();
+            
+            // Save to main website data
+            saveToMainWebsite('stats', newStats);
+            
+            showToast('স্ট্যাটস আপডেট', 'লাইভ কাউন্টার সফলভাবে আপডেট করা হয়েছে', 'success');
+        }
+        
+        // Update about section
+        function updateAboutSection() {
+            const aboutData = {
+                title: document.getElementById('aboutTitle').value,
+                content: document.getElementById('aboutContent').value,
+                vision: document.getElementById('aboutVision').value,
+                mission: document.getElementById('aboutMission').value,
+                updatedAt: new Date().toISOString(),
+                updatedBy: currentUser
+            };
+            
+            // Save to localStorage
+            localStorage.setItem('agantuk_about', JSON.stringify(aboutData));
+            
+            // Save to main website data
+            saveToMainWebsite('about', aboutData);
+            
+            showToast('আপডেট সফল', '"আমাদের সম্পর্কে" সেকশন আপডেট করা হয়েছে', 'success');
+        }
+        
+        // Save data to main website
+        function saveToMainWebsite(type, data) {
+            // Save to a special localStorage key that main website will check
+            localStorage.setItem(`agantuk_${type}_main`, JSON.stringify(data));
+            
+            // Also save to shared data object
+            const websiteData = JSON.parse(localStorage.getItem('agantuk_website_data') || '{}');
+            websiteData[type] = data;
+            localStorage.setItem('agantuk_website_data', JSON.stringify(websiteData));
+            
+            console.log(`${type} data saved for main website:`, data);
+        }
+        
+        // Add new project
+        function addProject() {
+            const project = {
+                id: Date.now(),
+                name: document.getElementById('projectName').value,
+                category: document.getElementById('projectCategory').value,
+                description: document.getElementById('projectDescription').value,
+                status: document.getElementById('projectStatus').value,
+                collected: parseInt(document.getElementById('projectCollected').value) || 0,
+                target: parseInt(document.getElementById('projectTarget').value) || 0,
+                createdAt: new Date().toISOString(),
+                createdBy: currentUser
+            };
+            
+            // Validation
+            if (!project.name || !project.category) {
+                showToast('ত্রুটি', 'প্রয়োজনীয় তথ্য পূরণ করুন', 'error');
+                return;
+            }
+            
+            // Save project
+            const projects = JSON.parse(localStorage.getItem('agantuk_projects') || '[]');
+            projects.unshift(project);
+            localStorage.setItem('agantuk_projects', JSON.stringify(projects));
+            
+            // Save to main website
+            saveToMainWebsite('projects', projects);
+            
+            // Reset form
+            document.getElementById('projectForm').reset();
+            
+            // Reload projects list
+            loadProjectsData();
+            
+            showToast('প্রজেক্ট যোগ করা হয়েছে', `${project.name} সফলভাবে যোগ করা হয়েছে`, 'success');
+        }
+        
+        // Upload report
+        function uploadReport() {
+            const report = {
+                id: Date.now(),
+                type: document.getElementById('reportType').value,
+                period: document.getElementById('reportPeriod').value,
+                title: document.getElementById('reportTitle').value,
+                description: document.getElementById('reportDescription').value,
+                fileLink: document.getElementById('reportFileLink').value,
+                uploadedAt: new Date().toISOString(),
+                uploadedBy: currentUser
+            };
+            
+            // Validation
+            if (!report.type || !report.period || !report.title) {
+                showToast('ত্রুটি', 'প্রয়োজনীয় তথ্য পূরণ করুন', 'error');
+                return;
+            }
+            
+            // Save report
+            const reports = JSON.parse(localStorage.getItem('agantuk_reports') || '[]');
+            reports.unshift(report);
+            localStorage.setItem('agantuk_reports', JSON.stringify(reports));
+            
+            // Save to main website
+            saveToMainWebsite('reports', reports);
+            
+            // Reset form
+            document.getElementById('reportForm').reset();
+            
+            // Reload reports
+            loadReportsData();
+            
+            showToast('রিপোর্ট আপডেট', `${report.title} সফলভাবে আপডেট করা হয়েছে`, 'success');
+        }
+    </script>
+</body>
+</html>
